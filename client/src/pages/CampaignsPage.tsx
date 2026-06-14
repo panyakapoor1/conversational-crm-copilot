@@ -98,6 +98,9 @@ export default function CampaignsPage() {
                   placeholder="e.g. Summer Mango Reactivation"
                 />
               </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-[11px] font-bold text-kev-muted mb-2 uppercase tracking-wider">Target Segment</label>
                 <select 
@@ -108,9 +111,6 @@ export default function CampaignsPage() {
                   {segments.map(s => <option key={s._id} value={s._id}>{s.name} ({s.customerCount.toLocaleString()} users)</option>)}
                 </select>
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-[11px] font-bold text-kev-muted mb-2 uppercase tracking-wider">Channel</label>
                 <select 

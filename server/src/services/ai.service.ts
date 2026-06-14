@@ -276,7 +276,7 @@ export async function generatePersonalizedMessages(
 Your job is to personalise a campaign message for each customer. Make each message feel genuinely personal — use their name, reference their favourite product, acknowledge their city, and adapt tone based on their engagement level.
 
 Campaign: "${campaignName}"
-Message Template: "${messageTemplate}"
+Campaign Intent: "${messageTemplate}"
 Campaign Channel Setting: "${campaignChannel}"
 
 RULES:
