@@ -45,7 +45,7 @@ export default function SegmentsPage() {
     setIsGenerating(true);
     try {
       const res = await api.segments.preview({ naturalLanguageQuery: input });
-      setPreview({ query: res.mongoQuery, count: res.estimatedCount });
+      setPreview({ query: res.mongoQuery, count: res.matchCount });
     } catch (err) {
       console.error(err);
     } finally {
@@ -140,14 +140,7 @@ export default function SegmentsPage() {
               </div>
               <p className="text-sm font-medium text-white/80">shoppers matched</p>
               
-              {preview && (
-                <div className="mt-8 pt-6 border-t border-white/10">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-white/60 mb-2">Generated Rule</p>
-                  <code className="text-[10px] font-mono text-white/70 bg-black/20 p-3 rounded-lg block break-all max-h-32 overflow-y-auto leading-relaxed">
-                    {JSON.stringify(typeof preview.query === 'string' ? JSON.parse(preview.query) : preview.query, null, 2)}
-                  </code>
-                </div>
-              )}
+              {/* Generated Rule removed per user request */}
             </div>
           </div>
 
