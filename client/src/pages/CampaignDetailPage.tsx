@@ -13,6 +13,7 @@ export default function CampaignDetailPage() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [generatingReport, setGeneratingReport] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (id) fetchCampaign();
@@ -62,7 +63,12 @@ export default function CampaignDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!id || !window.confirm('Are you sure you want to delete this campaign? This cannot be undone.')) return;
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      setTimeout(() => setConfirmDelete(false), 3000);
+      return;
+    }
+    if (!id) return;
     try {
       await api.campaigns.delete(id);
       navigate('/campaigns', { replace: true });
@@ -126,8 +132,8 @@ export default function CampaignDetailPage() {
               {sending ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Dispatching...</> : <>Launch Campaign <Rocket size={18} /></>}
             </button>
           )}
-          <button onClick={handleDelete} className="px-5 py-3.5 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors flex items-center justify-center gap-2 text-sm font-bold tracking-wider uppercase">
-            <Trash2 size={16} /> Delete
+          <button onClick={handleDelete} className="px-3 py-2 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase">
+            <Trash2 size={14} /> {confirmDelete ? 'Sure?' : 'Delete'}
           </button>
         </div>
       </header>
