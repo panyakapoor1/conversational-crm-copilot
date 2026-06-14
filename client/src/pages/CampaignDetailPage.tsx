@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import type { Campaign, Communication } from '../types';
 import { useCampaignUpdates } from '../hooks/useSocket';
@@ -7,6 +7,7 @@ import { Rocket, Sparkles, Send, CheckCircle2, MailOpen, MousePointerClick, XCir
 
 export default function CampaignDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [communications, setCommunications] = useState<Communication[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +65,7 @@ export default function CampaignDetailPage() {
     if (!id || !window.confirm('Are you sure you want to delete this campaign? This cannot be undone.')) return;
     try {
       await api.campaigns.delete(id);
-      window.history.back();
+      navigate('/campaigns', { replace: true });
     } catch (err) {
       console.error(err);
       alert('Failed to delete campaign');
@@ -96,7 +97,7 @@ export default function CampaignDetailPage() {
     <div className="space-y-8 animate-fade-in-up pb-12">
       {/* Back button */}
       <button 
-        onClick={() => window.history.back()}
+        onClick={() => navigate('/campaigns')}
         className="flex items-center gap-2 text-[13px] font-semibold text-kev-muted hover:text-kev-text transition-colors group mb-2"
       >
         <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Campaigns
