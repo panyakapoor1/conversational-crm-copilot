@@ -321,7 +321,7 @@ Return ONLY valid JSON as an array:
         allMessages.push(
           ...parsed.map((m: any) => ({
             customerId: m.customerId,
-            personalizedMessage: m.personalizedMessage || messageTemplate,
+            personalizedMessage: m.personalizedMessage || m.personalisedMessage || m.message || messageTemplate,
             channel: m.channel || 'whatsapp',
             channelReason: m.channelReason || 'Default channel assigned.',
           }))
