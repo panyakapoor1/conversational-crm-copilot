@@ -32,15 +32,21 @@ function extractJSON(text: string): any {
     if (fenced) {
       return JSON.parse(fenced[1].trim());
     }
-    // Try finding the first { ... } or [ ... ] block
-    const braceMatch = text.match(/(\{[\s\S]*\})/);
-    if (braceMatch) {
-      return JSON.parse(braceMatch[1]);
+    const firstBracket = text.indexOf('[');
+    const firstBrace = text.indexOf('{');
+    
+    if (firstBracket !== -1 && (firstBrace === -1 || firstBracket < firstBrace)) {
+      const bracketMatch = text.match(/(\[[\s\S]*\])/);
+      if (bracketMatch) {
+        return JSON.parse(bracketMatch[1]);
+      }
+    } else if (firstBrace !== -1) {
+      const braceMatch = text.match(/(\{[\s\S]*\})/);
+      if (braceMatch) {
+        return JSON.parse(braceMatch[1]);
+      }
     }
-    const bracketMatch = text.match(/(\[[\s\S]*\])/);
-    if (bracketMatch) {
-      return JSON.parse(bracketMatch[1]);
-    }
+    
     throw new Error('Could not extract JSON from AI response');
   }
 }
@@ -330,7 +336,7 @@ Return ONLY valid JSON as an array:
           customerId: c._id.toString(),
           personalizedMessage: messageTemplate.replace(/{Name}/gi, c.name).replace(/{city}/gi, c.city),
           channel: campaignChannel === 'mixed' ? c.channelPreference || 'whatsapp' : (campaignChannel as 'whatsapp' | 'sms' | 'email'),
-          channelReason: 'Fallback assigned due to API rate limit.',
+          channelReason: `Fallback error: ${error.message || 'API rate limit reached.'}`,
         }))
       );
     }
