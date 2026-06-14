@@ -22,6 +22,8 @@ router.get('/', async (req: Request, res: Response) => {
     const search = req.query.search as string;
     const city = req.query.city as string;
     const tags = req.query.tags as string;
+    const sortParam = req.query.sort as string;
+    const channel = req.query.channel as string;
 
     const filter: any = {};
 
@@ -44,9 +46,18 @@ router.get('/', async (req: Request, res: Response) => {
       }
     }
 
+    if (channel && channel !== 'all') {
+      filter.channelPreference = channel;
+    }
+
+    let sortOption: any = { createdAt: -1 };
+    if (sortParam === 'spend_desc') sortOption = { totalSpend: -1 };
+    else if (sortParam === 'engagement_desc') sortOption = { engagementScore: -1 };
+    else if (sortParam === 'recent') sortOption = { lastOrderDate: -1 };
+
     const [customers, total] = await Promise.all([
       Customer.find(filter)
-        .sort({ createdAt: -1 })
+        .sort(sortOption)
         .skip((page - 1) * limit)
         .limit(limit)
         .lean(),
