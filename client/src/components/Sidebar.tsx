@@ -1,20 +1,21 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, Target, Megaphone } from 'lucide-react';
+import { LayoutDashboard, Users, Target, Megaphone, Zap } from 'lucide-react';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/customers', icon: Users, label: 'Customers' },
-  { to: '/segments', icon: Target, label: 'Segments' },
+  { to: '/segments', icon: Target, label: 'Cohorts' },
+  { to: '/automations', icon: Zap, label: 'Automations' },
   { to: '/campaigns', icon: Megaphone, label: 'Campaigns' },
 ];
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 h-[calc(100vh-1.5rem)] fixed left-3 top-3 flex flex-col z-20 glass-card overflow-hidden">
+    <aside className="w-64 h-[calc(100vh-1.5rem)] fixed left-3 top-3 flex flex-col z-20 bg-kev-surface-solid border border-kev-border rounded-xl overflow-hidden shadow-sm">
       {/* ── Brand ── */}
       <div className="p-7 pb-2">
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-kev-primary to-purple-400 flex items-center justify-center shadow-lg shadow-kev-primary-glow">
+          <div className="w-9 h-9 rounded-xl bg-kev-primary flex items-center justify-center shadow-md shadow-kev-primary-glow">
             <span className="font-heading font-extrabold text-white text-sm">K</span>
           </div>
           <div>
@@ -24,8 +25,12 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* ── Separator ── */}
-      <div className="mx-6 h-px bg-gradient-to-r from-transparent via-kev-border to-transparent my-3" />
+      <div className="mx-6 h-px bg-kev-border my-3" />
+
+      {/* ── Section Label ── */}
+      <div className="px-6 mb-2 mt-4">
+        <span className="text-[10px] font-bold text-kev-muted uppercase tracking-widest">Growth</span>
+      </div>
 
       {/* ── Navigation ── */}
       <nav className="flex-1 px-4 mt-2 space-y-1 font-sans font-medium text-[14px]">
@@ -35,9 +40,9 @@ export default function Sidebar() {
             to={item.to}
             end={item.to === '/'}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group relative ${isActive
-                ? 'bg-kev-primary-soft text-kev-text font-semibold'
-                : 'text-kev-muted hover:text-kev-text-secondary hover:bg-white/[0.02]'
+              `flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group relative ${isActive
+                ? 'bg-white shadow-sm border border-kev-border text-kev-primary font-bold'
+                : 'text-kev-text-secondary hover:text-kev-text hover:bg-white/50'
               }`
             }
           >
@@ -45,12 +50,12 @@ export default function Sidebar() {
               <>
                 {/* Active indicator bar */}
                 {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-gradient-to-b from-kev-primary to-purple-400 shadow-[0_0_8px_rgba(124,92,252,0.5)]" />
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-kev-primary shadow-[0_0_8px_var(--color-kev-primary-glow)]" />
                 )}
                 <item.icon
-                  size={19}
-                  strokeWidth={isActive ? 2.2 : 1.5}
-                  className={`transition-colors ${isActive ? 'text-kev-primary' : 'group-hover:text-kev-text-secondary'}`}
+                  size={18}
+                  strokeWidth={isActive ? 2.5 : 2}
+                  className={`transition-colors ${isActive ? 'text-kev-primary' : 'group-hover:text-kev-text'}`}
                 />
                 {item.label}
               </>
@@ -59,17 +64,16 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* ── User Card ── */}
-      <div className="p-4 mx-3 mb-3 rounded-xl bg-kev-bg-alt/60 border border-kev-border">
+      <div className="p-4 mx-3 mb-3 rounded-xl bg-white border border-kev-border shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-kev-primary/30 to-purple-400/20 border border-kev-border flex items-center justify-center">
+          <div className="w-9 h-9 rounded-full bg-kev-primary-soft border border-kev-border flex items-center justify-center">
             <span className="text-kev-primary font-bold text-xs">MK</span>
           </div>
           <div className="min-w-0 flex-1">
             <p className="font-semibold text-[13px] text-kev-text truncate">Marketer</p>
             <p className="text-[11px] text-kev-muted">Admin</p>
           </div>
-          <div className="w-2 h-2 rounded-full bg-kev-success shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
+          <div className="w-2 h-2 rounded-full bg-kev-success shadow-[0_0_4px_var(--color-kev-success-soft)]" />
         </div>
       </div>
     </aside>
