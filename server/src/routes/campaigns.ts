@@ -267,7 +267,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const campaign = await Campaign.findById(req.params.id);
     if (!campaign) {
-      return res.status(404).json({ error: 'Campaign not found' });
+      return res.json({ message: 'Campaign already deleted' });
     }
 
     // Delete associated communications
