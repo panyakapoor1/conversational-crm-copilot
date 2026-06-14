@@ -161,9 +161,9 @@ export default function SegmentsPage() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 relative z-10">
               {[
-                { title: 'High-Value Churn Risk', desc: 'Spenders > ₹5k currently at risk.', q: 'Customers who have spent more than 5000 and have an engagement score under 30' },
-                { title: 'Recent VIPs', desc: '> 5 orders and bought in last 30 days.', q: 'Customers with more than 5 orders who purchased in the last 30 days' },
-                { title: 'One-Timers to Nudge', desc: 'Only 1 order, > 60 days ago.', q: 'Customers with exactly 1 order who have not purchased in the last 60 days' }
+                { title: 'Metro Mango Lovers', desc: 'Mango lovers in Delhi/Mumbai.', q: 'Find customers who are tagged as mango-lover and live in Delhi or Mumbai' },
+                { title: 'VIP High Spenders', desc: 'Score > 80, Spent > ₹3000.', q: 'Customers with an engagement score over 80 and a total spend of more than 3000' },
+                { title: 'At-Risk Cold Coffee Fans', desc: 'At-risk Cold Coffee lovers.', q: 'Find customers tagged as at-risk whose favourite category is Cold Coffees' }
               ].map((card, i) => (
                 <div 
                   key={i} 
