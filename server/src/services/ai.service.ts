@@ -66,12 +66,8 @@ async function askAI(
     }
     throw new Error('Unexpected response type from Gemini');
   } catch (error: any) {
-    const msg = error?.message || '';
-    if (msg.includes('429') || msg.includes('Quota') || error?.status === 429 || error?.status === 503) {
-      console.warn('⚠️ Gemini quota exhausted. Falling back to Groq API...');
-      return await askGroqFallback(systemInstruction, userMessage);
-    }
-    throw error;
+    console.warn('⚠️ Gemini error encountered. Falling back to Groq API...', error?.message);
+    return await askGroqFallback(systemInstruction, userMessage);
   }
 }
 
