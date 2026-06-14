@@ -45,7 +45,7 @@ export default function SegmentsPage() {
     setIsGenerating(true);
     try {
       const res = await api.segments.preview({ naturalLanguageQuery: input });
-      setPreview({ query: res.mongoQuery, count: res.matchCount });
+      setPreview({ query: res.query, count: res.matchCount });
     } catch (err) {
       console.error(err);
     } finally {

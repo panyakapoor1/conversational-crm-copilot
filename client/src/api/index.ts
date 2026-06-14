@@ -51,7 +51,7 @@ export const api = {
       const data = await res.json();
       return data.suggestions || [];
     },
-    preview: async (data: { naturalLanguageQuery: string }): Promise<{ mongoQuery: string, estimatedCount: number }> => {
+    preview: async (data: { naturalLanguageQuery: string }): Promise<{ query: any, explanation: string, matchCount: number, estimatedCount: number }> => {
       const res = await fetch(`${API_BASE}/segments/preview`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
