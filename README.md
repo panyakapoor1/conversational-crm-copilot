@@ -92,7 +92,7 @@ A persistent AI sidebar is accessible across all pages. The assistant performs l
 
 - **Frontend**: React (v19), TypeScript, Vite, Tailwind CSS v4, Socket.io-client.
 - **CRM Backend**: Node.js, Express, TypeScript, MongoDB (Mongoose), Socket.io.
-- **AI Core**: Google Gemini API (`gemini-2.0-flash` for high-quality instruction following).
+- **AI Core**: Google Gemini API (`gemini-2.0-flash-lite` for optimized quota utilization).
 - **Channel Service**: Node.js, Express, TypeScript (simulating delivery delay callbacks).
 
 ---
