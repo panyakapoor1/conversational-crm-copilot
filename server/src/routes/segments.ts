@@ -176,7 +176,7 @@ const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
 
 /**
  * POST /api/segments/suggest
- * AI generates 4 smart segment suggestions based on current customer data.
+ * AI generates 6 smart segment suggestions based on current customer data.
  */
 router.post('/suggest', async (_req: Request, res: Response) => {
   try {

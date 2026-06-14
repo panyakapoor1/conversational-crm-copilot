@@ -12,6 +12,7 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/kevent
 
 const CITIES = ['Mumbai', 'Delhi', 'Bengaluru', 'Hyderabad', 'Chennai', 'Pune', 'Noida', 'Gurgaon'];
 const FIRST_NAMES = ['Aarav', 'Vivaan', 'Aditya', 'Vihaan', 'Arjun', 'Sai', 'Reyansh', 'Ayaan', 'Krishna', 'Ishaan', 'Ananya', 'Diya', 'Saanvi', 'Aadhya', 'Isha', 'Priya', 'Neha', 'Kavya', 'Riya', 'Meera', 'Rohan', 'Amit', 'Rahul', 'Sneha', 'Pooja', 'Karan', 'Nisha'];
+const LAST_NAMES = ['Sharma', 'Verma', 'Gupta', 'Singh', 'Kumar', 'Kapoor', 'Mehta', 'Jain', 'Agarwal', 'Srivastava', 'Iyer', 'Reddy', 'Patel', 'Das', 'Chatterjee', 'Nair', 'Menon', 'Pillai', 'Rao', 'Bose', 'Dutta'];
 
 const CATALOG = [
   { name: 'Classic Vanilla', category: 'Classic Shakes', price: 179 },
@@ -66,11 +67,11 @@ async function seed() {
     const generateCustomerBase = (tags: string[], channelPref: 'whatsapp'|'sms'|'email', scoreMin: number, scoreMax: number) => {
       emailCounter++;
       const firstName = randomChoice(FIRST_NAMES);
-      const lastName = `User${emailCounter}`;
+      const lastName = randomChoice(LAST_NAMES);
       return {
         _id: new mongoose.Types.ObjectId(),
         name: `${firstName} ${lastName}`,
-        email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@gmail.com`,
+        email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}${emailCounter}@gmail.com`,
         phone: `+9198${randomInt(10000000, 99999999)}`,
         city: randomChoice(CITIES),
         tags,
@@ -84,9 +85,9 @@ async function seed() {
 
     const now = new Date();
 
-    console.log('🌱 Generating Loyalists (35)...');
-    for (let i = 0; i < 35; i++) {
-      const c = generateCustomerBase(['loyalist'], 'whatsapp', 80, 100);
+    console.log('🌱 Generating Loyal Subscribers (136)...');
+    for (let i = 0; i < 136; i++) {
+      const c = generateCustomerBase(['loyal_subscriber'], 'whatsapp', 80, 100);
       customersData.push(c);
       const numOrders = randomInt(4, 8);
       for (let j = 0; j < numOrders; j++) {
@@ -112,9 +113,9 @@ async function seed() {
       }
     }
 
-    console.log('🌱 Generating Mango Season Lapsed (48)...');
-    for (let i = 0; i < 48; i++) {
-      const c = generateCustomerBase(['mango-lover', 'lapsed'], randomChoice(['whatsapp', 'email']), 30, 50);
+    console.log('🌱 Generating Seasonal Gifters (166)...');
+    for (let i = 0; i < 166; i++) {
+      const c = generateCustomerBase(['seasonal_gifter'], randomChoice(['whatsapp', 'email']), 30, 50);
       customersData.push(c);
       const numOrders = randomInt(3, 5);
       for (let j = 0; j < numOrders; j++) {
@@ -140,9 +141,9 @@ async function seed() {
       }
     }
 
-    console.log('🌱 Generating At-Risk (42)...');
-    for (let i = 0; i < 42; i++) {
-      const c = generateCustomerBase(['at-risk'], randomChoice(['sms', 'email']), 25, 45);
+    console.log('🌱 Generating Lapsing Regulars (232)...');
+    for (let i = 0; i < 232; i++) {
+      const c = generateCustomerBase(['lapsing_regular'], randomChoice(['sms', 'email']), 25, 45);
       customersData.push(c);
       const numOrders = randomInt(3, 6);
       for (let j = 0; j < numOrders; j++) {
@@ -167,9 +168,9 @@ async function seed() {
       }
     }
 
-    console.log('🌱 Generating Churned (45)...');
-    for (let i = 0; i < 45; i++) {
-      const c = generateCustomerBase(['churned'], 'sms', 5, 20);
+    console.log('🌱 Generating One-Time Tryers (184)...');
+    for (let i = 0; i < 184; i++) {
+      const c = generateCustomerBase(['one_time_tryer'], 'sms', 5, 20);
       customersData.push(c);
       const numOrders = randomInt(1, 3);
       for (let j = 0; j < numOrders; j++) {
@@ -194,9 +195,9 @@ async function seed() {
       }
     }
 
-    console.log('🌱 Generating New Customers (30)...');
-    for (let i = 0; i < 30; i++) {
-      const c = generateCustomerBase(['new'], 'whatsapp', 50, 70);
+    console.log('🌱 Generating New Promising (136)...');
+    for (let i = 0; i < 136; i++) {
+      const c = generateCustomerBase(['new_promising'], 'whatsapp', 50, 70);
       customersData.push(c);
       const numOrders = randomInt(1, 2);
       for (let j = 0; j < numOrders; j++) {
@@ -218,6 +219,125 @@ async function seed() {
           orderDate,
           city: c.city
         });
+      }
+    }
+
+    console.log('🌱 Generating Discount Hunters (146)...');
+    for (let i = 0; i < 146; i++) {
+      const c = generateCustomerBase(['discount_hunter'], randomChoice(['email', 'sms']), 60, 80);
+      customersData.push(c);
+      const numOrders = randomInt(2, 5);
+      for (let j = 0; j < numOrders; j++) {
+        // Orders over last 6 months but high frequency
+        const orderDate = new Date(now.getTime() - randomInt(1, 180) * 24 * 60 * 60 * 1000 - randomInt(0, 10) * j * 24 * 60 * 60 * 1000);
+        const products = [randomChoice(CATALOG)];
+        
+        let totalAmount = 0;
+        const mappedProducts = products.map(p => {
+          const qty = randomInt(1, 4);
+          totalAmount += p.price * qty;
+          return { name: p.name, category: p.category, price: p.price, quantity: qty };
+        });
+
+        ordersData.push({
+          customerId: c._id,
+          products: mappedProducts,
+          totalAmount,
+          orderDate,
+          city: c.city
+        });
+      }
+    }
+
+    console.log('🌱 Generating Original Loyalists (175)...');
+    for (let i = 0; i < 175; i++) {
+      const c = generateCustomerBase(['loyalist'], 'whatsapp', 80, 100);
+      customersData.push(c);
+      const numOrders = randomInt(4, 8);
+      for (let j = 0; j < numOrders; j++) {
+        const orderDate = new Date(now.getTime() - randomInt(1, 14) * 24 * 60 * 60 * 1000 - randomInt(0, 30) * j * 24 * 60 * 60 * 1000);
+        const products = [randomChoice(CATALOG.filter(p => p.category === 'Signature Shakes'))];
+        if (Math.random() > 0.5) products.push(randomChoice(CATALOG));
+        let totalAmount = 0;
+        const mappedProducts = products.map(p => {
+          const qty = randomInt(1, 2);
+          totalAmount += p.price * qty;
+          return { name: p.name, category: p.category, price: p.price, quantity: qty };
+        });
+        ordersData.push({ customerId: c._id, products: mappedProducts, totalAmount, orderDate, city: c.city });
+      }
+    }
+
+    console.log('🌱 Generating Original Mango Lovers (240)...');
+    for (let i = 0; i < 240; i++) {
+      const c = generateCustomerBase(['mango-lover', 'lapsed'], randomChoice(['whatsapp', 'email']), 30, 50);
+      customersData.push(c);
+      const numOrders = randomInt(3, 5);
+      for (let j = 0; j < numOrders; j++) {
+        const orderDate = new Date(now.getTime() - randomInt(55, 80) * 24 * 60 * 60 * 1000 - randomInt(0, 20) * j * 24 * 60 * 60 * 1000);
+        const mangoProducts = CATALOG.filter(p => p.name.includes('Mango'));
+        const products = [randomChoice(mangoProducts.length ? mangoProducts : CATALOG)];
+        let totalAmount = 0;
+        const mappedProducts = products.map(p => {
+          const qty = randomInt(1, 3);
+          totalAmount += p.price * qty;
+          return { name: p.name, category: p.category, price: p.price, quantity: qty };
+        });
+        ordersData.push({ customerId: c._id, products: mappedProducts, totalAmount, orderDate, city: c.city });
+      }
+    }
+
+    console.log('🌱 Generating Original At-Risk (210)...');
+    for (let i = 0; i < 210; i++) {
+      const c = generateCustomerBase(['at-risk'], randomChoice(['sms', 'email']), 25, 45);
+      customersData.push(c);
+      const numOrders = randomInt(3, 6);
+      for (let j = 0; j < numOrders; j++) {
+        const orderDate = new Date(now.getTime() - randomInt(40, 65) * 24 * 60 * 60 * 1000 - randomInt(0, 20) * j * 24 * 60 * 60 * 1000);
+        const products = [randomChoice(CATALOG)];
+        let totalAmount = 0;
+        const mappedProducts = products.map(p => {
+          const qty = randomInt(1, 2);
+          totalAmount += p.price * qty;
+          return { name: p.name, category: p.category, price: p.price, quantity: qty };
+        });
+        ordersData.push({ customerId: c._id, products: mappedProducts, totalAmount, orderDate, city: c.city });
+      }
+    }
+
+    console.log('🌱 Generating Original Churned (225)...');
+    for (let i = 0; i < 225; i++) {
+      const c = generateCustomerBase(['churned'], 'sms', 5, 20);
+      customersData.push(c);
+      const numOrders = randomInt(1, 3);
+      for (let j = 0; j < numOrders; j++) {
+        const orderDate = new Date(now.getTime() - randomInt(100, 180) * 24 * 60 * 60 * 1000 - randomInt(0, 30) * j * 24 * 60 * 60 * 1000);
+        const products = [randomChoice(CATALOG)];
+        let totalAmount = 0;
+        const mappedProducts = products.map(p => {
+          const qty = 1;
+          totalAmount += p.price * qty;
+          return { name: p.name, category: p.category, price: p.price, quantity: qty };
+        });
+        ordersData.push({ customerId: c._id, products: mappedProducts, totalAmount, orderDate, city: c.city });
+      }
+    }
+
+    console.log('🌱 Generating Original New (150)...');
+    for (let i = 0; i < 150; i++) {
+      const c = generateCustomerBase(['new'], 'whatsapp', 50, 70);
+      customersData.push(c);
+      const numOrders = randomInt(1, 2);
+      for (let j = 0; j < numOrders; j++) {
+        const orderDate = new Date(now.getTime() - randomInt(1, 14) * 24 * 60 * 60 * 1000 - randomInt(0, 5) * j * 24 * 60 * 60 * 1000);
+        const products = [randomChoice(CATALOG)];
+        let totalAmount = 0;
+        const mappedProducts = products.map(p => {
+          const qty = 1;
+          totalAmount += p.price * qty;
+          return { name: p.name, category: p.category, price: p.price, quantity: qty };
+        });
+        ordersData.push({ customerId: c._id, products: mappedProducts, totalAmount, orderDate, city: c.city });
       }
     }
 

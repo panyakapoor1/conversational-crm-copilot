@@ -148,13 +148,13 @@ export async function generateSegmentSuggestions(
 ): Promise<SegmentSuggestion[]> {
   const systemPrompt = `You are a CRM strategist for Keventers, India's iconic milkshake and beverage brand.
 
-Analyse the customer data statistics below and suggest 4 highly actionable customer segments that would drive revenue and retention.
+Analyse the customer data statistics below and suggest 6 highly actionable customer segments that would drive revenue and retention.
 
 Customer schema fields available for querying:
 - name, email, phone, city
 - totalSpend, orderCount, lastOrderDate, firstOrderDate, averageOrderValue
 - favouriteProduct, favouriteCategory
-- tags: ['loyalist', 'mango-lover', 'at-risk', 'churned', 'new', 'lapsed']
+- tags: ['loyalist', 'mango-lover', 'at-risk', 'churned', 'new', 'lapsed', 'discount_hunter', 'lapsing_regular', 'loyal_subscriber', 'new_promising', 'one_time_tryer', 'seasonal_gifter']
 - channelPreference: 'whatsapp' | 'sms' | 'email'
 - engagementScore: 0-100
 
@@ -171,7 +171,7 @@ RULES:
 - For mongoQuery, do NOT use Javascript date objects (like new Date() or ISODate()). Use ISO date strings instead (e.g. "2024-01-01T00:00:00.000Z").
 - All keys and string values must be enclosed in double quotes.
 
-Return ONLY valid JSON as an array of exactly 4 objects:
+Return ONLY valid JSON as an array of exactly 6 objects:
 [
   {
     "name": "<segment name>",

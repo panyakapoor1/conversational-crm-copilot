@@ -40,37 +40,41 @@ export default function ChatSidebar() {
 
   return (
     <>
-      {/* ── Floating Action Button ── */}
-      <button 
-        onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 w-14 h-14 rounded-2xl flex items-center justify-center z-40 transition-all duration-300 ${
+      {/* ── Floating Action Button & Label ── */}
+      <div 
+        className={`fixed bottom-6 right-6 z-40 flex items-center gap-4 transition-all duration-300 origin-bottom-right ${
           isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100'
         }`}
-        style={{
-          background: 'linear-gradient(135deg, #7c5cfc, #9b6dff)',
-          boxShadow: '0 6px 24px rgba(124, 92, 252, 0.4), 0 0 0 0 rgba(124, 92, 252, 0.2)',
-        }}
-        id="chat-fab"
       >
-        <MessageCircle size={22} strokeWidth={1.8} className="text-white" />
-        {/* Pulse ring */}
-        <span className="absolute inset-0 rounded-2xl animate-ping bg-kev-primary/20 pointer-events-none" style={{ animationDuration: '3s' }} />
-      </button>
+        <div className="bg-white px-4 py-2.5 rounded-xl shadow-lg border border-kev-border animate-float relative flex flex-col items-end cursor-pointer" onClick={() => setIsOpen(true)}>
+          <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-white rotate-45 border-r border-t border-kev-border pointer-events-none" />
+          <span className="text-[13px] font-bold text-kev-primary leading-tight">Talk to Keventers AI</span>
+          <span className="text-[11px] text-kev-text-secondary">Your marketing co-pilot</span>
+        </div>
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="relative w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg shadow-kev-primary/30 transition-all duration-300 bg-kev-primary hover:bg-kev-primary-hover"
+          id="chat-fab"
+        >
+          <MessageCircle size={22} strokeWidth={1.8} className="text-white relative z-10" />
+          {/* Pulse ring */}
+          <span className="absolute inset-0 rounded-2xl animate-ping bg-kev-primary/40 pointer-events-none" style={{ animationDuration: '3s' }} />
+        </button>
+      </div>
 
-      {/* ── Chat Panel ── */}
       <div 
-        className={`fixed top-3 right-3 h-[calc(100vh-1.5rem)] w-[400px] glass-card flex flex-col z-50 transition-all duration-400 ${
+        className={`fixed top-3 right-3 h-[calc(100vh-1.5rem)] w-[400px] bg-white border border-kev-border shadow-xl rounded-xl flex flex-col z-50 transition-all duration-400 ${
           isOpen ? 'translate-x-0 opacity-100' : 'translate-x-[120%] opacity-0 pointer-events-none'
         }`}
       >
         {/* Header */}
         <div className="px-6 py-5 border-b border-kev-border flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-kev-accent/20 to-kev-accent/5 border border-kev-accent/20 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-kev-accent-soft border border-kev-accent/20 flex items-center justify-center">
               <Sparkles className="text-kev-accent" size={16} strokeWidth={1.8} />
             </div>
             <div>
-              <h3 className="font-heading font-bold text-base text-kev-text">Xeno AI</h3>
+              <h3 className="font-heading font-bold text-base text-kev-text">Keventers AI</h3>
               <p className="text-[10px] text-kev-muted font-medium">CRM Intelligence</p>
             </div>
           </div>
@@ -87,7 +91,7 @@ export default function ChatSidebar() {
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {messages.length === 0 && (
             <div className="text-center mt-16 px-6">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-kev-primary/10 to-kev-accent/5 border border-kev-border flex items-center justify-center mx-auto mb-5">
+              <div className="w-14 h-14 rounded-2xl bg-kev-accent-soft border border-kev-accent/20 flex items-center justify-center mx-auto mb-5">
                 <Sparkles size={24} strokeWidth={1.2} className="text-kev-accent" />
               </div>
               <p className="font-heading font-bold text-lg text-kev-text">Hi there 👋</p>
@@ -99,7 +103,7 @@ export default function ChatSidebar() {
                   <button
                     key={i}
                     onClick={() => { setInput(q); }}
-                    className="text-left text-[13px] px-4 py-2.5 rounded-xl bg-kev-bg-alt/80 border border-kev-border text-kev-text-secondary hover:text-kev-text hover:border-kev-border-hover transition-all"
+                    className="text-left text-[13px] px-4 py-2.5 rounded-xl bg-kev-surface-solid border border-kev-border text-kev-text-secondary hover:text-kev-text hover:border-kev-border-hover transition-all"
                   >
                     {q}
                   </button>
@@ -113,8 +117,8 @@ export default function ChatSidebar() {
               <div 
                 className={`max-w-[85%] px-4 py-3 text-[14px] leading-relaxed ${
                   msg.role === 'user' 
-                    ? 'bg-gradient-to-br from-kev-primary to-purple-500 text-white rounded-2xl rounded-br-md shadow-lg shadow-kev-primary-glow/30' 
-                    : 'bg-kev-bg-alt/80 text-kev-text rounded-2xl rounded-bl-md border border-kev-border'
+                    ? 'bg-kev-primary text-white rounded-2xl rounded-br-md shadow-md shadow-kev-primary/20' 
+                    : 'bg-kev-surface-solid text-kev-text rounded-2xl rounded-bl-md border border-kev-border'
                 }`}
               >
                 <div className="whitespace-pre-wrap">{msg.content}</div>
@@ -124,7 +128,7 @@ export default function ChatSidebar() {
           
           {isTyping && (
             <div className="flex justify-start">
-              <div className="bg-kev-bg-alt/80 rounded-2xl rounded-bl-md px-5 py-3.5 border border-kev-border flex items-center gap-1.5">
+              <div className="bg-kev-surface-solid rounded-2xl rounded-bl-md px-5 py-3.5 border border-kev-border flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 bg-kev-primary rounded-full animate-bounce" />
                 <span className="w-1.5 h-1.5 bg-kev-primary/70 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
                 <span className="w-1.5 h-1.5 bg-kev-primary/40 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
@@ -141,14 +145,14 @@ export default function ChatSidebar() {
               type="text" 
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder="Ask Xeno AI anything..."
-              className="glass-input w-full py-3.5 pl-4 pr-12 text-[14px]"
+              placeholder="Ask Keventers AI anything..."
+              className="input w-full py-3.5 pl-4 pr-12 text-[14px]"
               id="chat-input"
             />
             <button 
               type="submit"
               disabled={!input.trim() || isTyping}
-              className="absolute right-1.5 p-2 rounded-lg bg-gradient-to-br from-kev-primary to-purple-500 text-white disabled:opacity-30 transition-all hover:shadow-lg hover:shadow-kev-primary-glow/30"
+              className="absolute right-1.5 p-2 rounded-lg bg-kev-primary text-white disabled:opacity-30 transition-all hover:shadow-md hover:shadow-kev-primary/20"
               id="chat-send-btn"
             >
               <Send size={16} strokeWidth={2} />

@@ -1,38 +1,38 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Dark Background Scale ── */
-  --color-kev-bg: #060918;
-  --color-kev-bg-alt: #0c1024;
-  --color-kev-surface: rgba(15, 20, 45, 0.65);
-  --color-kev-surface-solid: #111631;
-  --color-kev-border: rgba(148, 163, 230, 0.1);
-  --color-kev-border-hover: rgba(148, 163, 230, 0.22);
+  /* ── Light Background Scale ── */
+  --color-kev-bg: #C2BFCA;
+  --color-kev-bg-alt: #FFFFFF;
+  --color-kev-surface: #FFFFFF;
+  --color-kev-surface-solid: #F5F0E8;
+  --color-kev-border: #E8E0D4;
+  --color-kev-border-hover: #D4CFC7;
 
   /* ── Text Scale ── */
-  --color-kev-text: #e8ecf8;
-  --color-kev-text-secondary: #a0a8c8;
-  --color-kev-muted: #636d8c;
+  --color-kev-text: #1C1A1E;
+  --color-kev-text-secondary: #3D3B42;
+  --color-kev-muted: #6B6872;
 
-  /* ── Primary (Purple/Indigo gradient) ── */
-  --color-kev-primary: #7c5cfc;
-  --color-kev-primary-hover: #6a48f0;
-  --color-kev-primary-glow: rgba(124, 92, 252, 0.25);
-  --color-kev-primary-soft: rgba(124, 92, 252, 0.1);
+  /* ── Primary (Sage Green) ── */
+  --color-kev-primary: #2D6A4F;
+  --color-kev-primary-hover: #1B4332;
+  --color-kev-primary-glow: rgba(45, 106, 79, 0.25);
+  --color-kev-primary-soft: rgba(45, 106, 79, 0.1);
 
-  /* ── Accent (Warm Amber/Gold) ── */
-  --color-kev-accent: #f0a848;
-  --color-kev-accent-soft: rgba(240, 168, 72, 0.12);
+  /* ── Accent (Warm Brown/Caramel) ── */
+  --color-kev-accent: #D4A373;
+  --color-kev-accent-soft: rgba(212, 163, 115, 0.12);
 
   /* ── Status Colors ── */
-  --color-kev-success: #34d399;
-  --color-kev-success-soft: rgba(52, 211, 153, 0.12);
-  --color-kev-warning: #fbbf24;
-  --color-kev-warning-soft: rgba(251, 191, 36, 0.12);
-  --color-kev-danger: #f87171;
-  --color-kev-danger-soft: rgba(248, 113, 113, 0.12);
-  --color-kev-info: #60a5fa;
-  --color-kev-info-soft: rgba(96, 165, 250, 0.12);
+  --color-kev-success: #10B981;
+  --color-kev-success-soft: rgba(16, 185, 129, 0.12);
+  --color-kev-warning: #F59E0B;
+  --color-kev-warning-soft: rgba(245, 158, 11, 0.12);
+  --color-kev-danger: #EF4444;
+  --color-kev-danger-soft: rgba(239, 68, 68, 0.12);
+  --color-kev-info: #3B82F6;
+  --color-kev-info-soft: rgba(59, 130, 246, 0.12);
 
   /* ── Typography ── */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -60,8 +60,8 @@
   }
 
   ::selection {
-    background: rgba(124, 92, 252, 0.3);
-    color: #fff;
+    background: rgba(45, 106, 79, 0.2);
+    color: var(--color-kev-primary);
   }
 }
 
@@ -71,86 +71,60 @@
 
 @layer utilities {
 
-  /* ── Glass Card ── */
-  .glass-card {
+  /* ── Solid Card ── */
+  .card {
     background: var(--color-kev-surface);
-    backdrop-filter: blur(24px) saturate(1.4);
-    -webkit-backdrop-filter: blur(24px) saturate(1.4);
     border: 1px solid var(--color-kev-border);
     border-radius: 1.25rem;
-    box-shadow:
-      0 4px 24px rgba(0, 0, 0, 0.2),
-      0 1px 4px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.03);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.3s ease,
-                border-color 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
 
-  .glass-card:hover {
+  .card:hover {
     border-color: var(--color-kev-border-hover);
-    box-shadow:
-      0 8px 40px rgba(0, 0, 0, 0.25),
-      0 2px 8px rgba(0, 0, 0, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   }
 
-  /* ── Glass Input ── */
-  .glass-input {
-    background: rgba(10, 14, 36, 0.6);
+  /* ── Input ── */
+  .input {
+    background: #FFFFFF;
     border: 1px solid var(--color-kev-border);
     border-radius: 0.875rem;
     color: var(--color-kev-text);
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
   }
 
-  .glass-input::placeholder {
+  .input::placeholder {
     color: var(--color-kev-muted);
   }
 
-  .glass-input:focus {
+  .input:focus {
     outline: none;
     border-color: var(--color-kev-primary);
-    box-shadow: 0 0 0 3px var(--color-kev-primary-glow),
-                0 0 20px rgba(124, 92, 252, 0.1);
+    box-shadow: 0 0 0 3px var(--color-kev-primary-soft);
   }
 
-  /* ── Glow Button ── */
-  .glow-button {
-    background: linear-gradient(135deg, var(--color-kev-primary), #9b6dff);
+  /* ── Primary Button ── */
+  .btn-primary {
+    background: var(--color-kev-primary);
     color: white;
     border-radius: 0.875rem;
     font-weight: 600;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 20px var(--color-kev-primary-glow);
-    position: relative;
-    overflow: hidden;
+    transition: all 0.2s ease;
   }
 
-  .glow-button::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 60%);
-    opacity: 0;
-    transition: opacity 0.3s;
+  .btn-primary:hover {
+    background: var(--color-kev-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--color-kev-primary-glow);
   }
 
-  .glow-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(124, 92, 252, 0.4);
-  }
-
-  .glow-button:hover::before {
-    opacity: 1;
-  }
-
-  .glow-button:active {
+  .btn-primary:active {
     transform: translateY(0);
   }
 
-  .glow-button:disabled {
-    opacity: 0.45;
+  .btn-primary:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -172,72 +146,21 @@
   .status-draft {
     background: var(--color-kev-info-soft);
     color: var(--color-kev-info);
-    box-shadow: 0 0 12px rgba(96, 165, 250, 0.15);
   }
 
   .status-sending {
     background: var(--color-kev-warning-soft);
     color: var(--color-kev-warning);
-    box-shadow: 0 0 12px rgba(251, 191, 36, 0.15);
   }
 
   .status-sent, .status-completed {
     background: var(--color-kev-success-soft);
     color: var(--color-kev-success);
-    box-shadow: 0 0 12px rgba(52, 211, 153, 0.15);
   }
 
   .status-failed {
     background: var(--color-kev-danger-soft);
     color: var(--color-kev-danger);
-    box-shadow: 0 0 12px rgba(248, 113, 113, 0.15);
-  }
-
-  /* ── Gradient Text ── */
-  .gradient-text {
-    background: linear-gradient(135deg, #7c5cfc, #b08dff, #f0a848);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .gradient-text-primary {
-    background: linear-gradient(135deg, #7c5cfc, #a78bfa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* ── Gradient Border (animated) ── */
-  .gradient-border {
-    position: relative;
-    border: 1px solid transparent;
-    background-clip: padding-box;
-  }
-
-  .gradient-border::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, var(--color-kev-primary), var(--color-kev-accent), var(--color-kev-primary));
-    background-size: 200% 200%;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: gradient-rotate 4s ease infinite;
-    opacity: 0.6;
-    pointer-events: none;
-  }
-
-  /* ── Subtle grid background ── */
-  .bg-grid {
-    background-image:
-      linear-gradient(rgba(148, 163, 230, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(148, 163, 230, 0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
   }
 }
 
@@ -279,35 +202,12 @@
 .animate-shimmer {
   background: linear-gradient(
     90deg,
-    rgba(148, 163, 230, 0.04) 0%,
-    rgba(148, 163, 230, 0.08) 50%,
-    rgba(148, 163, 230, 0.04) 100%
+    rgba(232, 224, 212, 0.4) 0%,
+    rgba(232, 224, 212, 0.8) 50%,
+    rgba(232, 224, 212, 0.4) 100%
   );
   background-size: 200% 100%;
-  animation: shimmer 2s ease infinite;
-}
-
-@keyframes gradient-rotate {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px var(--color-kev-primary-glow); }
-  50% { box-shadow: 0 0 24px var(--color-kev-primary-glow), 0 0 48px rgba(124, 92, 252, 0.1); }
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-4px); }
-}
-
-.animate-float {
-  animation: float 4s ease-in-out infinite;
+  animation: shimmer 1.5s ease infinite;
 }
 
 @keyframes slideInRight {
@@ -333,13 +233,23 @@
   animation: bar-fill 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════════
    SCROLLBAR
    ══════════════════════════════════════════════════════════════════════════════ */
 
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -347,16 +257,39 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 230, 0.12);
-  border-radius: 10px;
+  background: var(--color-kev-primary);
+  border-radius: 6px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   SMOOTH SCROLLING (LENIS)
+   ══════════════════════════════════════════════════════════════════════════════ */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 230, 0.25);
+  background: var(--color-kev-border-hover);
 }
 
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 230, 0.12) transparent;
+  scrollbar-color: var(--color-kev-border) transparent;
 }

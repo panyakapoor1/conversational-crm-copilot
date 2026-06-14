@@ -38,7 +38,7 @@ The application consists of three services connected in a real-time callback loo
 ```
 
 ### The Async Loop & Real-Time Stats
-1. **Goal Submission**: The marketer interacts with the AI Copilot. The AI evaluates the prompt, queries the database, creates the segment definition, and drafts the personalized copy.
+1. **Goal Submission**: The marketer interacts with the AI Copilot. The AI evaluates the prompt, queries the database, creates the cohort definition, and drafts the personalized copy.
 2. **Campaign Launch**: Once approved, the campaign is initiated. The CRM backend dispatches the messages to the `channel-service`.
 3. **Async Callback Simulation**: The `channel-service` asynchronously processes the messages, applying random delays to simulate real-world delivery latency, and fires callbacks (`delivered`, `opened`, `clicked`) back to the CRM server.
 4. **WebSocket Streaming**: Upon receiving status updates, the CRM backend updates MongoDB and immediately streams the new campaign stats to the React client via **Socket.io**. The dashboard updates dynamically in real-time.
@@ -53,8 +53,8 @@ Unlike typical AI take-home projects that default to a simple chatbox wrapper, *
 | :--- | :--- | :--- |
 | **User Experience** | Marketer is forced to operate entirely in a chat dialog, making bulk inspection or editing of records extremely tedious. | A full visual suite (Dashboard charts, Customer tables, Campaign logs) paired with a persistent, floating AI Co-pilot sidebar. |
 | **Real-time Feedback** | Stale page updates; requires constant polling or page refreshes to see if a campaign has finished sending. | **WebSockets (Socket.io)** push live delivery, open, and click updates directly to the UI as they happen. |
-| **Data Flexibility** | Relational SQL databases that require strict migrations when adding new customer attributes or AI tags. | **MongoDB (NoSQL)** documents allow the AI to generate dynamic user tagging and complex segments on the fly. |
-| **Grounding (RAG)** | AI drafts messages blindly or requires massive prompt payloads to understand the context. | In-memory RAG pulls exact customer metrics, recent campaigns, and segments directly from MongoDB to construct prompt context. |
+| **Data Flexibility** | Relational SQL databases that require strict migrations when adding new customer attributes or AI tags. | **MongoDB (NoSQL)** documents allow the AI to generate dynamic user tagging and complex cohorts on the fly. |
+| **Grounding (RAG)** | AI drafts messages blindly or requires massive prompt payloads to understand the context. | In-memory RAG pulls exact customer metrics, recent campaigns, and cohorts directly from MongoDB to construct prompt context. |
 
 By building a dual-interface dashboard + co-pilot, the marketer gets the benefits of speed through natural language command alongside the visibility and trust of standard visual CRM tables.
 
@@ -77,14 +77,17 @@ The AI co-pilot analyzes the segment's customer behaviors and recommends the abs
 ### 3. Closed-Loop Campaign Intelligence
 After a campaign is sent, the AI analyzes the live delivery, open, and click logs to generate a **Post-Campaign Debrief**. It surfaces what worked, what didn't, and gives one specific action recommendation for the next campaign.
 
-### 4. Natural Language Segment Builder
-Instead of clicking through rigid dropdowns, the marketer can write target audience parameters in plain English (e.g., *"Find customers from Mumbai who haven't ordered in 60 days"*). The AI parses this text, compiles it into a **native MongoDB query**, provides a live count preview, and creates the segment dynamically.
+### 4. Natural Language Cohort Builder
+Instead of clicking through rigid dropdowns, the marketer can write target audience parameters in plain English (e.g., *"Find customers from Mumbai who haven't ordered in 60 days"*). The AI parses this text, compiles it into a **native MongoDB query**, provides a live count preview, and creates the cohort dynamically.
 
 ### 5. Floating AI Chat Copilot (RAG-Grounded)
-A persistent AI sidebar is accessible across all pages. The assistant performs live database retrieval (RAG) on customer stats, recent campaigns, and existing segments before answering, allowing it to:
+A persistent AI sidebar is accessible across all pages. The assistant performs live database retrieval (RAG) on customer stats, recent campaigns, and existing cohorts before answering, allowing it to:
 * Answer complex queries (e.g., *"How many customers haven't ordered in 60 days?"*).
 * Recommend campaign angles and draft personalized copy options.
 * Provide quick data analysis on campaign performance without needing SQL skills.
+
+### 6. (Future Upgrade) Dynamic AI Messaging for Automations
+Currently, the live "Automations" dashboard simulates real-time audience activity and dynamically cycles through pre-configured message variations to maintain a highly responsive 2.5s update loop. A planned future upgrade is to integrate the **Gemini API** directly into these event-triggered flows (via the `ai.service.ts` module). This will allow the AI to generate 100% unique, hyper-personalized copy for every single automation recipient on-the-fly, adapting the framing, tone, and offer logic based on the user's past orders, engagement score, and city right before dispatch.
 
 ---
 
@@ -169,5 +172,7 @@ crm_xeno/
 
 ## Key Differences & Trade-offs (Conscious Scope Cuts)
 - **Real-Time WebSockets vs Polling**: I opted for a persistent Socket.io connection to ensure stats stream instantly to the user instead of relying on inefficient database polling.
-- **MongoDB vs SQL**: Customer CRM attributes are highly fluid (dynamic tags, user preferences, purchase habits). MongoDB’s flexible schema design was chosen to model dynamic segments effortlessly without heavy migrations.
+- **MongoDB vs SQL**: Customer CRM attributes are highly fluid (dynamic tags, user preferences, purchase habits). MongoDB’s flexible schema design was chosen to model dynamic cohorts effortlessly without heavy migrations.
 - **Queueing in Production**: In a production environment, I would insert a message broker (e.g., RabbitMQ or BullMQ) between the CRM and the Channel Service to manage rate limits and ensure delivery reliability. For the purposes of this demo, direct asynchronous HTTP calls are used.
+- **Service Authentication**: To secure the async callback loop at scale in production, I would implement **JWT (JSON Web Tokens)** for service-to-service authentication to ensure that only our authorized Channel Service can write delivery metrics to the CRM, preventing malicious webhook spoofing.
+- **Multi-Step Autonomous Follow-Ups (Agent Journeys)**: The UI features a visual demonstration of a multi-step autonomous journey (where an AI agent sends an email, waits, evaluates non-openers, and autonomously sends an SMS follow-up). In a production environment, this would be backed by a background worker queue (like RabbitMQ) evaluating live data. For this demo, building a true background execution engine was scoped out because relying on the free-tier Gemini API for continuous, multi-step background data evaluation would quickly exceed rate limits and exhaust quotas.
