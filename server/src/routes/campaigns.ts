@@ -259,4 +259,28 @@ router.post('/:id/intelligence', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * DELETE /api/campaigns/:id
+ * Delete a campaign and all its associated communications.
+ */
+router.delete('/:id', async (req: Request, res: Response) => {
+  try {
+    const campaign = await Campaign.findById(req.params.id);
+    if (!campaign) {
+      return res.status(404).json({ error: 'Campaign not found' });
+    }
+
+    // Delete associated communications
+    await Communication.deleteMany({ campaignId: campaign._id });
+
+    // Delete the campaign
+    await Campaign.findByIdAndDelete(campaign._id);
+
+    res.json({ message: 'Campaign and associated communications deleted successfully' });
+  } catch (error: any) {
+    console.error('[Campaigns] DELETE /:id error:', error.message);
+    res.status(500).json({ error: 'Failed to delete campaign', details: error.message });
+  }
+});
+
 export default router;

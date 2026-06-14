@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { api } from '../api';
 import type { Campaign, Communication } from '../types';
 import { useCampaignUpdates } from '../hooks/useSocket';
-import { Rocket, Sparkles, Send, CheckCircle2, MailOpen, MousePointerClick, XCircle, ChevronLeft, Loader2 } from 'lucide-react';
+import { Rocket, Sparkles, Send, CheckCircle2, MailOpen, MousePointerClick, XCircle, ChevronLeft, Loader2, Trash2 } from 'lucide-react';
 
 export default function CampaignDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -60,6 +60,17 @@ export default function CampaignDetailPage() {
     }
   };
 
+  const handleDelete = async () => {
+    if (!id || !window.confirm('Are you sure you want to delete this campaign? This cannot be undone.')) return;
+    try {
+      await api.campaigns.delete(id);
+      window.history.back();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete campaign');
+    }
+  };
+
   if (loading) return <div className="flex items-center justify-center h-[60vh] text-kev-muted font-medium"><div className="w-10 h-10 border-4 border-kev-primary border-t-transparent rounded-full animate-spin"></div></div>;
   if (!campaign) return <div className="flex items-center justify-center h-[60vh] font-heading font-bold text-2xl text-kev-text">Campaign not found</div>;
 
@@ -108,11 +119,16 @@ export default function CampaignDetailPage() {
           </p>
         </div>
         
-        {campaign.status === 'draft' && (
-          <button onClick={handleSend} disabled={sending} className="btn-primary px-8 py-3.5 flex items-center gap-3 relative z-10 self-start md:self-auto shadow-md shadow-kev-primary/20">
-            {sending ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Dispatching...</> : <>Launch Campaign <Rocket size={18} /></>}
+        <div className="relative z-10 flex flex-col md:flex-row gap-3 md:items-center">
+          {campaign.status === 'draft' && (
+            <button onClick={handleSend} disabled={sending} className="btn-primary px-8 py-3.5 flex items-center gap-3 shadow-md shadow-kev-primary/20">
+              {sending ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Dispatching...</> : <>Launch Campaign <Rocket size={18} /></>}
+            </button>
+          )}
+          <button onClick={handleDelete} className="px-5 py-3.5 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors flex items-center justify-center gap-2 text-sm font-bold tracking-wider uppercase">
+            <Trash2 size={16} /> Delete
           </button>
-        )}
+        </div>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

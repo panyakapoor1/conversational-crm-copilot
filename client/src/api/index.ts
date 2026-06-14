@@ -92,6 +92,11 @@ export const api = {
       const res = await fetch(`${API_BASE}/campaigns/${id}/intelligence`, { method: 'POST' });
       if (!res.ok) throw new Error('Failed to generate intelligence');
       return res.json();
+    },
+    delete: async (id: string): Promise<{ message: string }> => {
+      const res = await fetch(`${API_BASE}/campaigns/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete campaign');
+      return res.json();
     }
   },
   chat: {
