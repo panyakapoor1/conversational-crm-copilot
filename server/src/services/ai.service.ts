@@ -274,19 +274,31 @@ Return ONLY valid JSON as an array:
   }
 ]`;
 
-    const raw = await askGemini(
-      systemPrompt,
-      `Personalise messages for these customers:\n${JSON.stringify(customerSummaries, null, 2)}`
-    );
-    const parsed = extractJSON(raw);
+    try {
+      const raw = await askGemini(
+        systemPrompt,
+        `Personalise messages for these customers:\n${JSON.stringify(customerSummaries, null, 2)}`
+      );
+      const parsed = extractJSON(raw);
 
-    if (Array.isArray(parsed)) {
+      if (Array.isArray(parsed)) {
+        allMessages.push(
+          ...parsed.map((m: any) => ({
+            customerId: m.customerId,
+            personalizedMessage: m.personalizedMessage || messageTemplate,
+            channel: m.channel || 'whatsapp',
+            channelReason: m.channelReason || 'Default channel assigned.',
+          }))
+        );
+      }
+    } catch (error: any) {
+      console.warn('[Gemini Fallback] API Limit Reached or Error:', error.message);
       allMessages.push(
-        ...parsed.map((m: any) => ({
-          customerId: m.customerId,
-          personalizedMessage: m.personalizedMessage || messageTemplate,
-          channel: m.channel || 'whatsapp',
-          channelReason: m.channelReason || 'Default channel assigned.',
+        ...batch.map((c: any) => ({
+          customerId: c._id.toString(),
+          personalizedMessage: messageTemplate.replace(/{Name}/gi, c.name).replace(/{city}/gi, c.city),
+          channel: campaignChannel === 'mixed' ? c.channelPreference || 'whatsapp' : (campaignChannel as 'whatsapp' | 'sms' | 'email'),
+          channelReason: 'Fallback assigned due to API rate limit.',
         }))
       );
     }
