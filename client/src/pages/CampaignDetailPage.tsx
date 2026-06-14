@@ -128,8 +128,19 @@ export default function CampaignDetailPage() {
         
         <div className="relative z-10 flex flex-col md:flex-row gap-3 md:items-center">
           {campaign.status === 'draft' && (
-            <button onClick={handleSend} disabled={sending} className="btn-primary px-8 py-3.5 flex items-center gap-3 shadow-md shadow-kev-primary/20">
-              {sending ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Dispatching...</> : <>Launch Campaign <Rocket size={18} /></>}
+            <button onClick={handleSend} disabled={sending} className="relative group px-10 py-4 rounded-2xl font-heading font-extrabold text-base tracking-wide text-white overflow-hidden transition-all duration-300 hover:scale-[1.03] active:scale-95 shadow-xl shadow-kev-primary/30 hover:shadow-2xl hover:shadow-kev-primary/40 disabled:opacity-60 disabled:hover:scale-100">
+              {/* Animated gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-kev-primary via-purple-500 to-kev-accent bg-[length:200%_100%] animate-[shimmer_3s_ease-in-out_infinite]" />
+              {/* Glow pulse ring */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-kev-primary to-kev-accent rounded-2xl opacity-30 blur-lg group-hover:opacity-50 transition-opacity animate-pulse" />
+              {/* Content */}
+              <span className="relative z-10 flex items-center gap-3">
+                {sending ? (
+                  <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> Personalizing & Dispatching...</>
+                ) : (
+                  <><Rocket size={20} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" /> Launch Campaign<Sparkles size={14} className="opacity-60" /></>
+                )}
+              </span>
             </button>
           )}
           <button onClick={handleDelete} className="px-3 py-2 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase">
@@ -184,7 +195,15 @@ export default function CampaignDetailPage() {
               
               <div className="relative z-10">
                 {campaign.intelligenceReport ? (
-                  <div className="prose prose-invert prose-p:font-sans prose-headings:font-heading prose-h2:text-kev-primary prose-h3:text-kev-text-secondary prose-a:text-kev-accent text-[14px] max-w-none text-kev-text leading-relaxed" dangerouslySetInnerHTML={{ __html: campaign.intelligenceReport.replace(/\n/g, '<br />') }} />
+                  <div className="prose prose-invert prose-p:font-sans prose-headings:font-heading prose-h2:text-kev-primary prose-h3:text-kev-text-secondary prose-a:text-kev-accent text-[14px] max-w-none text-kev-text leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: campaign.intelligenceReport
+                      .replace(/\*\*(.+?)\*\*/g, '<strong class="text-white font-bold">$1</strong>')
+                      .replace(/^### (.+)$/gm, '<h3 class="text-lg font-heading font-bold text-kev-primary mt-6 mb-2">$1</h3>')
+                      .replace(/^## (.+)$/gm, '<h2 class="text-xl font-heading font-bold text-kev-primary mt-6 mb-3">$1</h2>')
+                      .replace(/^- (.+)$/gm, '<div class="flex gap-2 items-start my-1"><span class="text-kev-accent mt-0.5">•</span><span>$1</span></div>')
+                      .replace(/\n/g, '<br />')
+                    }}
+                  />
                 ) : (
                   <div className="py-12 text-center text-kev-muted text-[14px]">No debrief generated yet. Click generate to analyze performance.</div>
                 )}
@@ -209,7 +228,7 @@ export default function CampaignDetailPage() {
                         </div>
                         <span className="text-[10px] text-kev-muted uppercase tracking-wider font-bold">
                           via {comm.channel}
-                          {comm.channelReason && (
+                          {comm.channelReason && !comm.channelReason.startsWith('Fallback') && (
                             <span className="text-[11px] text-kev-accent/90 italic font-medium ml-2 font-sans normal-case">
                               — {comm.channelReason}
                             </span>
