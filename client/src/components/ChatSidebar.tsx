@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Sparkles, X, Send, MessageCircle } from 'lucide-react';
 import { api } from '../api';
 import type { ChatMessage } from '../types';
+import { useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 export default function ChatSidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +11,7 @@ export default function ChatSidebar() {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -22,6 +25,11 @@ export default function ChatSidebar() {
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
     setIsTyping(true);
+
+    if (userMsg.toLowerCase().includes('customer')) {
+      navigate('/customers');
+      setIsOpen(false);
+    }
 
     try {
       const history = messages.map(m => ({ role: m.role, content: m.content }));
@@ -118,10 +126,14 @@ export default function ChatSidebar() {
                 className={`max-w-[85%] px-4 py-3 text-[14px] leading-relaxed ${
                   msg.role === 'user' 
                     ? 'bg-kev-primary text-white rounded-2xl rounded-br-md shadow-md shadow-kev-primary/20' 
-                    : 'bg-kev-surface-solid text-kev-text rounded-2xl rounded-bl-md border border-kev-border'
+                    : 'bg-kev-surface-solid text-kev-text rounded-2xl rounded-bl-md border border-kev-border [&_p]:mb-2 last:[&_p]:mb-0 [&_strong]:font-bold [&_strong]:text-kev-text-dark [&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4 [&_li]:mb-1'
                 }`}
               >
-                <div className="whitespace-pre-wrap">{msg.content}</div>
+                {msg.role === 'assistant' ? (
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                ) : (
+                  <div className="whitespace-pre-wrap">{msg.content}</div>
+                )}
               </div>
             </div>
           ))}
