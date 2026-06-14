@@ -8,26 +8,25 @@ export default function SegmentsPage() {
   const [loading, setLoading] = useState(true);
   const [input, setInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [preview, setPreview] = useState<{ query: any, count: number } | null>(null);
-  const [viewingSegment, setViewingSegment] = useState<any>(null);
+  const [preview, setPreview] = useState<{ query: unknown, count: number } | null>(null);
+  const [viewingSegment, setViewingSegment] = useState<Segment & { customerIds?: { _id: string, name: string, engagementScore: number, city: string, totalSpend: number }[] } | null>(null);
   const [loadingSegment, setLoadingSegment] = useState(false);
 
   const handleViewData = async (id: string) => {
+    const segment = segments.find(s => s._id === id);
+    if (!segment) return;
+    
+    setViewingSegment(segment as unknown as Segment & { customerIds?: { _id: string, name: string, engagementScore: number, city: string, totalSpend: number }[] });
     setLoadingSegment(true);
-    setViewingSegment(null);
     try {
       const data = await api.segments.getById(id);
-      setViewingSegment(data);
+      setViewingSegment(data as unknown as Segment & { customerIds?: { _id: string, name: string, engagementScore: number, city: string, totalSpend: number }[] });
     } catch (err) {
       console.error(err);
     } finally {
       setLoadingSegment(false);
     }
   };
-
-  useEffect(() => {
-    fetchSegments();
-  }, []);
 
   const fetchSegments = async () => {
     try {
@@ -39,6 +38,13 @@ export default function SegmentsPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchSegments();
+  }, []);
+
+
 
   const handlePreview = async () => {
     if (!input.trim()) return;
@@ -79,7 +85,7 @@ export default function SegmentsPage() {
       <div className="flex flex-col lg:flex-row gap-8 items-start">
         
         {/* ── Left Column: Command Center (Builder + Estimate) ── */}
-        <div className="lg:w-[400px] xl:w-[450px] flex flex-col gap-6 sticky top-8">
+        <div className="w-full lg:w-[400px] xl:w-[450px] flex flex-col gap-6 lg:sticky top-8">
           
           {/* Builder */}
           <div className="card p-8 bg-white shadow-sm border border-kev-border/80">
@@ -217,9 +223,8 @@ export default function SegmentsPage() {
         </div>
       </div>
 
-      {/* ── Slide-out Drawer for Segment Data ── */}
       <div 
-        className={`fixed top-3 right-3 h-[calc(100vh-1.5rem)] w-[400px] bg-white border-l border-kev-border shadow-xl rounded-l-xl flex flex-col z-30 transition-all duration-400 ${viewingSegment || loadingSegment ? 'translate-x-0 opacity-100' : 'translate-x-[120%] opacity-0 pointer-events-none'}`}
+        className={`fixed top-0 right-0 h-full w-full md:top-3 md:right-3 md:h-[calc(100vh-1.5rem)] md:w-[400px] bg-white border-l border-kev-border shadow-xl rounded-none md:rounded-xl flex flex-col z-50 transition-all duration-400 ${viewingSegment || loadingSegment ? 'translate-x-0 opacity-100' : 'translate-x-[120%] opacity-0 pointer-events-none'}`}
       >
         <div className="p-6 border-b border-kev-border flex justify-between items-start">
           <div>
@@ -243,7 +248,7 @@ export default function SegmentsPage() {
         <div className="flex-1 overflow-y-auto p-4 space-y-3" data-lenis-prevent>
           {loadingSegment ? (
             <div className="flex justify-center p-10"><Loader2 className="animate-spin text-kev-muted" /></div>
-          ) : viewingSegment?.customerIds?.map((cust: any) => (
+          ) : viewingSegment?.customerIds?.map((cust: { _id: string, name: string, engagementScore: number, city: string, totalSpend: number }) => (
             <div key={cust._id} className="p-4 rounded-xl bg-kev-surface-solid border border-kev-border/50 flex flex-col gap-2">
               <div className="flex justify-between items-start">
                 <span className="font-heading font-bold text-[14px] text-kev-text">{cust.name}</span>
@@ -260,7 +265,7 @@ export default function SegmentsPage() {
       </div>
       
       {(viewingSegment || loadingSegment) && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-20 md:hidden" onClick={() => setViewingSegment(null)} />
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 md:hidden" onClick={() => setViewingSegment(null)} />
       )}
     </div>
   );

@@ -76,7 +76,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-10 animate-fade-in-up pb-12">
       {/* ── Header ── */}
-      <header className="flex justify-between items-end">
+      <header className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-end gap-4">
         <div>
           <h1 className="text-3xl font-heading font-extrabold tracking-tight">Overview</h1>
           <p className="text-kev-muted mt-1.5 text-sm font-medium">
@@ -90,7 +90,7 @@ export default function Dashboard() {
       </header>
 
       {/* ── Stats Row ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 stagger-children">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 stagger-children">
         {statConfig.map((stat, i) => (
           <div key={i} className="card p-6 flex flex-col justify-between h-[150px] animate-fade-in-up opacity-0">
             <div className="flex justify-between items-start">
@@ -158,12 +158,12 @@ export default function Dashboard() {
             <BarChart3 size={18} className="text-kev-primary" />
             Persona Breakdown
           </h2>
-          <div className="card p-6 h-[calc(100%-3rem)]">
+          <div className="card p-6 h-auto lg:h-[calc(100%-3rem)]">
             <div className="space-y-5">
-              {stats && (stats as any).tagBreakdown?.length > 0 ? (
-                (stats as any).tagBreakdown
-                  .filter((tagObj: any) => tagObj.tag)
-                  .map((tagObj: any) => {
+              {stats && ((stats as unknown) as { tagBreakdown?: { tag: string, count: number }[] }).tagBreakdown?.length ? (
+                ((stats as unknown) as { tagBreakdown?: { tag: string, count: number }[] }).tagBreakdown
+                  ?.filter((tagObj) => tagObj.tag)
+                  .map((tagObj) => {
                   const tag = tagObj.tag;
                   const count = tagObj.count;
                   const pct = stats.totalCustomers > 0 ? (count / stats.totalCustomers) * 100 : 0;
@@ -224,8 +224,8 @@ export default function Dashboard() {
       {/* ── Recent Activity ── */}
       <div className="space-y-5 pt-2">
         <h2 className="text-xl font-heading font-bold">Recent Activity</h2>
-        <div className="card overflow-hidden">
-          <table className="w-full text-left border-collapse" id="recent-campaigns-table">
+        <div className="card overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[600px]" id="recent-campaigns-table">
             <thead>
               <tr className="border-b border-kev-border text-[11px] text-kev-text-secondary font-bold uppercase tracking-wider bg-kev-surface-solid">
                 <th className="py-4 px-6 font-semibold">Campaign Name</th>

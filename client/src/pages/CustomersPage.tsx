@@ -15,10 +15,6 @@ export default function CustomersPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
-  useEffect(() => {
-    fetchCustomers();
-  }, [search, selectedTag, city, sort, channel]);
-
   const fetchCustomers = async () => {
     setLoading(true);
     try {
@@ -37,6 +33,12 @@ export default function CustomersPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCustomers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, selectedTag, city, sort, channel]);
 
   const tags = [
     { id: 'all', label: 'All' },
@@ -135,7 +137,7 @@ export default function CustomersPage() {
         </div>
 
         {/* Bottom Row: Additional Filters */}
-        <div className={`transition-all duration-300 overflow-hidden flex flex-wrap gap-4 items-center bg-[#F9F7F5] rounded-xl border border-[#E8E4DF] ${showFilters ? 'p-3 max-h-[500px] opacity-100' : 'p-0 max-h-0 opacity-0 border-transparent'}`}>
+        <div className={`transition-all duration-300 overflow-hidden flex flex-wrap gap-4 items-center bg-[#F9F7F5] rounded-xl border border-[#E8E4DF] ${showFilters ? 'p-3 max-h-[1000px] opacity-100' : 'p-0 max-h-0 opacity-0 border-transparent'}`}>
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-kev-muted">CITY</span>
             <select 
@@ -193,7 +195,7 @@ export default function CustomersPage() {
       </div>
 
       {/* ── Grid of Cards ── */}
-      <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 transition-all duration-500 ${selectedCustomer ? 'pr-[420px]' : ''}`}>
+      <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 transition-all duration-500 ${selectedCustomer ? 'md:pr-[420px]' : ''}`}>
         {loading ? (
           Array(6).fill(0).map((_, i) => <div key={i} className="card h-48 animate-shimmer" />)
         ) : customers.length > 0 ? (
@@ -247,7 +249,7 @@ export default function CustomersPage() {
 
       {/* ── Slide-out Drawer ── */}
       <div 
-        className={`fixed top-3 right-3 h-[calc(100vh-1.5rem)] w-[400px] bg-white border-l border-kev-border shadow-xl rounded-l-xl flex flex-col z-30 transition-all duration-400 ${selectedCustomer ? 'translate-x-0 opacity-100' : 'translate-x-[120%] opacity-0 pointer-events-none'}`}
+        className={`fixed top-0 right-0 h-full w-full md:top-3 md:right-3 md:h-[calc(100vh-1.5rem)] md:w-[400px] bg-white border-l border-kev-border shadow-xl rounded-none md:rounded-xl flex flex-col z-50 transition-all duration-400 ${selectedCustomer ? 'translate-x-0 opacity-100' : 'translate-x-[120%] opacity-0 pointer-events-none'}`}
       >
         {selectedCustomer && (
           <>

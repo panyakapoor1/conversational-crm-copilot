@@ -67,9 +67,19 @@ function App() {
           <img src="/milkshake.png" className="absolute bottom-[5%] right-[30%] w-64 animate-float" style={{ animationDelay: '-5s', animationDuration: '10s' }} alt="" />
         </div>
         
-        <div className="relative z-10 flex w-full">
+        <div className="relative z-10 flex w-full flex-col md:flex-row">
+          {/* Mobile Header */}
+          <div className="md:hidden flex items-center justify-between p-4 bg-kev-surface-solid/80 backdrop-blur border-b border-kev-border sticky top-0 z-30">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-kev-primary flex items-center justify-center shadow-md">
+                <span className="font-heading font-extrabold text-white text-xs">K</span>
+              </div>
+              <span className="font-heading font-extrabold text-lg text-kev-text tracking-tight">Keventers</span>
+            </div>
+          </div>
+
           <Sidebar />
-          <main className="flex-1 min-w-0 px-10 py-8 ml-72 max-w-[1600px] mx-auto transition-all duration-300">
+          <main className="flex-1 min-w-0 px-4 md:px-10 pt-6 pb-24 md:py-8 md:ml-72 max-w-[1600px] mx-auto transition-all duration-300">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/customers" element={<CustomersPage />} />

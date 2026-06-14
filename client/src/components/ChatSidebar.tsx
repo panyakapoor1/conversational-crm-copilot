@@ -71,7 +71,7 @@ export default function ChatSidebar() {
       </div>
 
       <div 
-        className={`fixed top-3 right-3 h-[calc(100vh-1.5rem)] w-[400px] bg-white border border-kev-border shadow-xl rounded-xl flex flex-col z-50 transition-all duration-400 ${
+        className={`fixed top-0 right-0 h-full w-full md:top-3 md:right-3 md:h-[calc(100vh-1.5rem)] md:w-[400px] bg-white border-l md:border border-kev-border md:shadow-xl md:rounded-xl flex flex-col z-50 transition-all duration-400 ${
           isOpen ? 'translate-x-0 opacity-100' : 'translate-x-[120%] opacity-0 pointer-events-none'
         }`}
       >

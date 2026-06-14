@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
 import type { Campaign, Segment } from '../types';
-import { Rocket, Clock, Plus, Loader2, Sparkles, MessageSquare, Smartphone, Mail } from 'lucide-react';
+import { Rocket, Plus, Loader2, Sparkles, MessageSquare, Smartphone, Mail, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function CampaignsPage() {
@@ -16,10 +16,6 @@ export default function CampaignsPage() {
   const [messageTemplate, setMessageTemplate] = useState('');
   const [channel, setChannel] = useState<'whatsapp' | 'sms' | 'email' | 'mixed'>('mixed');
   const [isCreating, setIsCreating] = useState(false);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const fetchData = async () => {
     try {
@@ -36,6 +32,20 @@ export default function CampaignsPage() {
     }
   };
 
+  const getStatusClass = (status: string) => {
+    switch (status) {
+      case 'draft': return 'status-draft';
+      case 'sending': return 'status-sending';
+      case 'sent': case 'completed': return 'status-sent';
+      default: return 'status-draft';
+    }
+  };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchData();
+  }, []);
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !segmentId || !messageTemplate) return;
@@ -50,19 +60,12 @@ export default function CampaignsPage() {
     }
   };
 
-  const getStatusClass = (status: string) => {
-    switch (status) {
-      case 'draft': return 'status-draft';
-      case 'sending': return 'status-sending';
-      case 'sent': case 'completed': return 'status-sent';
-      default: return 'status-draft';
-    }
-  };
+
 
   return (
     <div className="space-y-10 animate-fade-in-up pb-12">
       {/* ── Header ── */}
-      <header className="flex justify-between items-end">
+      <header className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-end gap-4">
         <div>
           <h1 className="text-3xl font-heading font-extrabold tracking-tight">Campaigns</h1>
           <p className="text-kev-muted mt-1.5 text-sm font-medium">Manage and launch personalised messaging.</p>
@@ -114,7 +117,7 @@ export default function CampaignsPage() {
               <div>
                 <label className="block text-[11px] font-bold text-kev-muted mb-2 uppercase tracking-wider">Channel</label>
                 <select 
-                  value={channel} onChange={e => setChannel(e.target.value as any)}
+                  value={channel} onChange={e => setChannel(e.target.value as 'whatsapp' | 'sms' | 'email' | 'mixed')}
                   className="input w-full py-3.5 px-4 text-[14px] appearance-none"
                 >
                   <option value="mixed">AI Recommended (Mixed)</option>
@@ -164,7 +167,7 @@ export default function CampaignsPage() {
                 </div>
               </div>
               <h3 className="font-heading font-bold text-lg mt-3 text-kev-text group-hover:text-kev-primary transition-colors line-clamp-1">{camp.name}</h3>
-              <p className="text-[13px] font-medium text-kev-muted mt-1.5 line-clamp-1">Target: {typeof camp.segmentId === 'object' ? (camp.segmentId as any).name : 'Segment'}</p>
+              <p className="text-[13px] font-medium text-kev-muted mt-1.5 line-clamp-1">Target: {typeof camp.segmentId === 'object' ? (camp.segmentId as { name?: string }).name : 'Segment'}</p>
             </div>
             
             <div className="mt-auto pt-5 border-t border-kev-border/30 flex justify-between items-end">

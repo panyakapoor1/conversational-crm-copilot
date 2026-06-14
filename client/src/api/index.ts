@@ -51,7 +51,7 @@ export const api = {
       const data = await res.json();
       return data.suggestions || [];
     },
-    preview: async (data: { naturalLanguageQuery: string }): Promise<{ query: any, explanation: string, matchCount: number, estimatedCount: number }> => {
+    preview: async (data: { naturalLanguageQuery: string }): Promise<{ query: unknown, explanation: string, matchCount: number, estimatedCount: number }> => {
       const res = await fetch(`${API_BASE}/segments/preview`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -100,7 +100,7 @@ export const api = {
     }
   },
   chat: {
-    sendMessage: async (message: string, history: any[]): Promise<{ response: string, context: any }> => {
+    sendMessage: async (message: string, history: { role: string, content: string }[]): Promise<{ response: string, context: unknown }> => {
       const res = await fetch(`${API_BASE}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -15,10 +15,6 @@ export default function CampaignDetailPage() {
   const [generatingReport, setGeneratingReport] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  useEffect(() => {
-    if (id) fetchCampaign();
-  }, [id]);
-
   const fetchCampaign = async () => {
     try {
       const data = await api.campaigns.getById(id!);
@@ -30,6 +26,12 @@ export default function CampaignDetailPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (id) fetchCampaign();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   useCampaignUpdates(id, (newStats) => {
     if (campaign) {
@@ -151,7 +153,7 @@ export default function CampaignDetailPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* ── Delivery Metrics ── */}
-        <div className="card p-8 lg:p-10 lg:col-span-1 h-[600px] flex flex-col relative overflow-hidden">
+        <div className="card p-8 lg:p-10 lg:col-span-1 h-auto md:h-[600px] flex flex-col relative overflow-hidden">
           <h2 className="text-xl font-heading font-bold mb-8 text-kev-text">Delivery Metrics</h2>
           <div className="mb-10 relative z-10">
             <p className="text-[11px] text-kev-muted uppercase tracking-wider font-bold mb-1">Total Audience</p>
@@ -221,7 +223,7 @@ export default function CampaignDetailPage() {
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-heading font-bold text-base text-kev-text">{typeof comm.customerId === 'object' ? (comm.customerId as any).name : comm.customerId}</span>
+                          <span className="font-heading font-bold text-base text-kev-text">{typeof comm.customerId === 'object' ? (comm.customerId as { name?: string }).name : comm.customerId}</span>
                           <span className={`status-badge ${getStatusClass(comm.status)} ml-2`}>
                             {comm.status}
                           </span>

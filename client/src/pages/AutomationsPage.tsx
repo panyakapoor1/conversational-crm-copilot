@@ -165,6 +165,7 @@ export default function AutomationsPage() {
       }
     }, 2500);
     return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [birthdayLive, annivLive, lapsedLive]);
 
   return (
@@ -234,12 +235,13 @@ export default function AutomationsPage() {
               <Activity size={14} /> Live Journey Funnel
             </h3>
             
-            <div className="flex items-center justify-between relative px-4">
+            <div className="flex flex-col md:flex-row items-center justify-between relative px-4 gap-8 md:gap-0">
               {/* Connecting Line */}
-              <div className="absolute top-[18px] left-10 right-10 h-[2px] bg-kev-border/60 z-0" />
+              <div className="hidden md:block absolute top-[18px] left-10 right-10 h-[2px] bg-kev-border/60 z-0" />
+              <div className="md:hidden absolute top-10 bottom-10 left-1/2 -translate-x-1/2 w-[2px] bg-kev-border/60 z-0" />
               
               {/* Step 1 */}
-              <div className="relative z-10 flex flex-col items-center gap-4 bg-kev-surface-solid px-2">
+              <div className="relative z-10 flex flex-col items-center gap-4 bg-kev-surface-solid px-2 py-2 md:py-0">
                 <div className="w-9 h-9 rounded-full bg-white shadow-sm border border-kev-primary/40 flex items-center justify-center text-kev-primary font-bold text-sm">1</div>
                 <div className="text-center">
                   <p className="text-[11px] font-bold uppercase tracking-wider text-kev-muted mb-1">Email Pitch</p>
@@ -248,7 +250,7 @@ export default function AutomationsPage() {
               </div>
 
               {/* Step 2 */}
-              <div className="relative z-10 flex flex-col items-center gap-4 bg-kev-surface-solid px-2">
+              <div className="relative z-10 flex flex-col items-center gap-4 bg-kev-surface-solid px-2 py-2 md:py-0">
                 <div className="w-9 h-9 rounded-full bg-white shadow-sm border border-kev-border flex items-center justify-center text-kev-muted font-bold text-sm"><Loader2 size={14} className="animate-spin" /></div>
                 <div className="text-center">
                   <p className="text-[11px] font-bold uppercase tracking-wider text-kev-muted mb-1">Wait 48 Hrs</p>
@@ -257,7 +259,7 @@ export default function AutomationsPage() {
               </div>
 
               {/* Step 3 */}
-              <div className="relative z-10 flex flex-col items-center gap-4 bg-kev-surface-solid px-2">
+              <div className="relative z-10 flex flex-col items-center gap-4 bg-kev-surface-solid px-2 py-2 md:py-0">
                 <div className="w-9 h-9 rounded-full bg-kev-primary border border-kev-primary flex items-center justify-center text-white font-bold text-sm shadow-md shadow-kev-primary/20">3</div>
                 <div className="text-center">
                   <p className="text-[11px] font-bold uppercase tracking-wider text-kev-primary mb-1">SMS Follow-up</p>
@@ -266,7 +268,7 @@ export default function AutomationsPage() {
               </div>
 
               {/* Goal Reached */}
-              <div className="relative z-10 flex flex-col items-center gap-4 bg-kev-surface-solid px-2">
+              <div className="relative z-10 flex flex-col items-center gap-4 bg-kev-surface-solid px-2 py-2 md:py-0">
                 <div className="w-9 h-9 rounded-full bg-emerald-500 border border-emerald-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20"><CheckCircle2 size={16} /></div>
                 <div className="text-center">
                   <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 mb-1">Recovered</p>
@@ -312,7 +314,7 @@ export default function AutomationsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-4 mb-8 relative z-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 relative z-10">
             {[
               { label: 'Invites Sent', value: annivStats.sent.toLocaleString() + ' / 2,000' },
               { label: 'Clicked Link', value: annivStats.clicked.toLocaleString() },
@@ -368,7 +370,7 @@ export default function AutomationsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-4 mb-8 relative z-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 relative z-10">
             {[
               { label: 'Birthdays today', value: bdayStats.today.toString() },
               { label: 'Offers sent', value: bdayStats.sent.toString() },
@@ -423,7 +425,7 @@ export default function AutomationsPage() {
                 </div>
               </div>
 
-              <div className="flex gap-4 mb-8">
+              <div className="flex flex-col md:flex-row gap-4 mb-8">
                 <div className="flex-1 p-4 rounded-xl bg-kev-surface-solid border border-kev-border/50">
                   <p className="text-[10px] text-kev-muted font-bold uppercase tracking-wider mb-1.5">TRIGGER</p>
                   <div className="flex items-center gap-2 font-medium text-[14px]">
@@ -460,7 +462,7 @@ export default function AutomationsPage() {
           </div>
 
           {/* Extended Stats Area */}
-          <div className="mt-6 pt-6 border-t border-kev-border grid grid-cols-4 gap-6 relative z-10">
+          <div className="mt-6 pt-6 border-t border-kev-border grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
             <div>
               <p className="text-sm text-kev-text font-medium mb-1">At risk (live)</p>
               <p className="font-heading font-bold text-3xl mb-2">{stats.atRisk.toLocaleString()} <span className="text-sm font-normal text-kev-muted ml-1">active</span></p>
@@ -484,8 +486,8 @@ export default function AutomationsPage() {
           </div>
 
           {/* Funnel & Live Activity */}
-          <div className="mt-8 grid grid-cols-5 gap-8 relative z-10">
-            <div className="col-span-3 card bg-kev-surface-solid border-none p-6 shadow-inner shadow-kev-border/50">
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-5 gap-8 relative z-10">
+            <div className="md:col-span-3 card bg-kev-surface-solid border-none p-6 shadow-inner shadow-kev-border/50">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="font-heading font-bold text-lg">Recovery funnel</h3>
                 <button className="text-kev-muted hover:text-kev-text">•••</button>
@@ -512,7 +514,7 @@ export default function AutomationsPage() {
               </div>
             </div>
 
-            <div className="col-span-2">
+            <div className="md:col-span-2">
               <h3 className="font-heading font-bold text-lg mb-1">Live audience activity</h3>
               {lapsedLive ? (
                 <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider flex items-center gap-1.5 mb-6">

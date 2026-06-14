@@ -11,7 +11,7 @@ export function getSocket(): Socket {
   return socketInstance;
 }
 
-export function useCampaignUpdates(campaignId: string | undefined, onUpdate: (stats: any) => void) {
+export function useCampaignUpdates(campaignId: string | undefined, onUpdate: (stats: { total: number; queued: number; sent: number; delivered: number; opened: number; clicked: number; failed: number; }) => void) {
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export function useCampaignUpdates(campaignId: string | undefined, onUpdate: (st
     socket.emit('join-campaign', campaignId);
 
     // Listen for updates
-    const handleUpdate = (data: { campaignId: string, stats: any }) => {
+    const handleUpdate = (data: { campaignId: string, stats: { total: number; queued: number; sent: number; delivered: number; opened: number; clicked: number; failed: number; } }) => {
       if (data.campaignId === campaignId) {
         onUpdate(data.stats);
       }
