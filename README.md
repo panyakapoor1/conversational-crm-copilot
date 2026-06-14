@@ -95,7 +95,7 @@ Currently, the live "Automations" dashboard simulates real-time audience activit
 
 - **Frontend**: React (v19), TypeScript, Vite, Tailwind CSS v4, Socket.io-client.
 - **CRM Backend**: Node.js, Express, TypeScript, MongoDB (Mongoose), Socket.io.
-- **AI Core**: Google Gemini API (`gemini-2.0-flash-lite` for optimized quota utilization).
+- **AI Core**: Google Gemini API (`gemini-2.5-flash` or `gemini-2.0-flash-lite`) with automatic failover to the **Groq API** (`llama-3.3-70b-versatile`) if quota limits are reached.
 - **Channel Service**: Node.js, Express, TypeScript (simulating delivery delay callbacks).
 
 ---
@@ -135,6 +135,7 @@ crm_xeno/
    PORT=3001
    MONGODB_URI=mongodb://localhost:27017/crm_xeno
    GEMINI_API_KEY=your_gemini_api_key_here
+   GROQ_API_KEY=your_groq_api_key_here
    CHANNEL_SERVICE_URL=http://localhost:3002
    ```
    Create a `.env` file in the `channel-service/` directory:
