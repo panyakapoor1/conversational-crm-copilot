@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
 import type { Customer } from '../types';
-import { Search, MapPin, ShoppingBag, X, Mail, Phone, Activity, ArrowDownAZ, Filter, ChevronDown } from 'lucide-react';
+import { Search, MapPin, ShoppingBag, X, Mail, Phone, Activity, Filter } from 'lucide-react';
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
