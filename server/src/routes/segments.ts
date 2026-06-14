@@ -169,30 +169,65 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
+let activeSuggestPromise: Promise<any[]> | null = null;
+let cachedSuggestions: any[] | null = null;
+let lastCacheTime: number = 0;
+const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
+
 /**
  * POST /api/segments/suggest
  * AI generates 4 smart segment suggestions based on current customer data.
  */
 router.post('/suggest', async (_req: Request, res: Response) => {
   try {
-    const customerStats = await getCustomerStats();
-    const suggestions = await generateSegmentSuggestions(customerStats);
+    const now = Date.now();
+    
+    // 1. If we have a resolved cache, return it
+    if (cachedSuggestions && (now - lastCacheTime < CACHE_DURATION)) {
+      console.log('[Segments] Returning cached smart suggestions');
+      return res.json({ suggestions: cachedSuggestions });
+    }
 
-    // For each suggestion, execute the query to get actual counts
-    const enrichedSuggestions = await Promise.all(
-      suggestions.map(async (s) => {
-        try {
-          const mongoQuery = reviveDates(s.mongoQuery);
-          const count = await Customer.countDocuments(mongoQuery);
-          return { ...s, actualCount: count };
-        } catch {
-          return { ...s, actualCount: 0 };
-        }
-      })
-    );
+    // 2. If there is an active API request already fetching, reuse its promise
+    if (activeSuggestPromise) {
+      console.log('[Segments] Concurrent request detected. Awaiting active suggestions promise...');
+      const suggestions = await activeSuggestPromise;
+      return res.json({ suggestions });
+    }
 
-    res.json({ suggestions: enrichedSuggestions });
+    console.log('[Segments] Fetching fresh smart suggestions from Gemini...');
+    
+    // Create the shared promise
+    activeSuggestPromise = (async () => {
+      const customerStats = await getCustomerStats();
+      const suggestions = await generateSegmentSuggestions(customerStats);
+
+      // For each suggestion, execute the query to get actual counts
+      const enrichedSuggestions = await Promise.all(
+        suggestions.map(async (s) => {
+          try {
+            const mongoQuery = reviveDates(s.mongoQuery);
+            const count = await Customer.countDocuments(mongoQuery);
+            return { ...s, actualCount: count };
+          } catch {
+            return { ...s, actualCount: 0 };
+          }
+        })
+      );
+      return enrichedSuggestions;
+    })();
+
+    // Await the shared promise
+    const suggestions = await activeSuggestPromise;
+    
+    // Save to cache
+    cachedSuggestions = suggestions;
+    lastCacheTime = Date.now();
+    activeSuggestPromise = null;
+
+    res.json({ suggestions });
   } catch (error: any) {
+    activeSuggestPromise = null;
     console.error('[Segments] POST /suggest error:', error.message);
     res.status(500).json({ error: 'Failed to generate suggestions', details: error.message });
   }
