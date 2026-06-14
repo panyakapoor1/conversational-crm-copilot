@@ -1,18 +1,23 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
 import type { Customer } from '../types';
-import { Search, MapPin, ShoppingBag, X, Mail, Phone, Activity } from 'lucide-react';
+import { Search, MapPin, ShoppingBag, X, Mail, Phone, Activity, ArrowDownAZ, Filter, ChevronDown } from 'lucide-react';
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedTag, setSelectedTag] = useState('all');
+  const [city, setCity] = useState('all');
+  const [sort, setSort] = useState('recent');
+  const [channel, setChannel] = useState('all');
+  const [gender, setGender] = useState('all'); // Mock for UI parity
+  const [showFilters, setShowFilters] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
   useEffect(() => {
     fetchCustomers();
-  }, [search, selectedTag]);
+  }, [search, selectedTag, city, sort, channel]);
 
   const fetchCustomers = async () => {
     setLoading(true);
@@ -20,6 +25,9 @@ export default function CustomersPage() {
       const params: Record<string, string> = {};
       if (search) params.search = search;
       if (selectedTag !== 'all') params.tags = selectedTag;
+      if (city !== 'all') params.city = city;
+      if (sort !== 'recent') params.sort = sort;
+      if (channel !== 'all') params.channel = channel;
       
       const data = await api.customers.getAll(params);
       setCustomers(data.customers);
@@ -32,6 +40,12 @@ export default function CustomersPage() {
 
   const tags = [
     { id: 'all', label: 'All' },
+    { id: 'discount_hunter', label: 'Discount Hunter' },
+    { id: 'lapsing_regular', label: 'Lapsing Regular' },
+    { id: 'loyal_subscriber', label: 'Loyal Subscriber' },
+    { id: 'new_promising', label: 'New Promising' },
+    { id: 'one_time_tryer', label: 'One-Time Tryer' },
+    { id: 'seasonal_gifter', label: 'Seasonal Gifter' },
     { id: 'loyalist', label: 'Loyalist' },
     { id: 'at-risk', label: 'At Risk' },
     { id: 'churned', label: 'Churned' },
@@ -49,12 +63,18 @@ export default function CustomersPage() {
 
   const getTagColor = (tag: string) => {
     switch (tag) {
-      case 'loyalist': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
-      case 'at-risk': return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
-      case 'churned': return 'bg-red-500/10 text-red-400 border-red-500/20';
-      case 'new': return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
-      case 'mango-lover': return 'bg-orange-500/10 text-orange-400 border-orange-500/20';
-      default: return 'bg-white/5 text-kev-muted border-kev-border';
+      case 'discount_hunter': return 'bg-purple-50 text-purple-600 border-purple-200';
+      case 'lapsing_regular': return 'bg-amber-50 text-amber-600 border-amber-200';
+      case 'loyal_subscriber': return 'bg-emerald-50 text-emerald-600 border-emerald-200';
+      case 'new_promising': return 'bg-blue-50 text-blue-600 border-blue-200';
+      case 'one_time_tryer': return 'bg-gray-100 text-gray-600 border-gray-300';
+      case 'seasonal_gifter': return 'bg-rose-50 text-rose-600 border-rose-200';
+      case 'loyalist': return 'bg-emerald-50 text-emerald-600 border-emerald-200';
+      case 'at-risk': return 'bg-amber-50 text-amber-600 border-amber-200';
+      case 'churned': return 'bg-red-50 text-red-600 border-red-200';
+      case 'new': return 'bg-blue-50 text-blue-600 border-blue-200';
+      case 'mango-lover': return 'bg-orange-50 text-orange-600 border-orange-200';
+      default: return 'bg-kev-surface-solid text-kev-text-secondary border-kev-border';
     }
   };
 
@@ -67,49 +87,124 @@ export default function CustomersPage() {
       </header>
 
       {/* ── Toolbar ── */}
-      <div className="flex flex-col md:flex-row gap-5 mb-8">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-kev-muted" size={16} strokeWidth={2} />
-          <input 
-            type="text" 
-            placeholder="Search customers..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="glass-input w-full py-3 pl-11 pr-4 text-[14px]"
-            id="customer-search"
-          />
+      <div className="flex flex-col gap-4 mb-8 w-full max-w-full">
+        {/* Top Row: Search & Tags */}
+        <div className="flex flex-col md:flex-row gap-4 items-center w-full">
+          <div className="relative w-full md:w-1/3 min-w-[250px] shrink-0">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-kev-muted" size={16} strokeWidth={2} />
+            <input 
+              type="text" 
+              placeholder="Search by name or city..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="input w-full py-2.5 pl-11 pr-4 text-[14px]"
+              id="customer-search"
+            />
+          </div>
+          
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide items-center flex-1 w-full min-w-0 pr-4">
+            {tags.map(tag => (
+              <button
+                key={tag.id}
+                onClick={() => setSelectedTag(tag.id)}
+                className={`px-4 py-2 rounded-full text-[13px] font-bold tracking-wide transition-all whitespace-nowrap shrink-0 border ${
+                  selectedTag === tag.id 
+                    ? 'bg-kev-primary text-white border-kev-primary shadow-md shadow-kev-primary/20' 
+                    : 'bg-[#F9F7F5] border-[#E8E4DF] text-kev-text-secondary hover:text-kev-text hover:bg-white'
+                }`}
+                id={`tag-filter-${tag.id}`}
+              >
+                {tag.label}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide items-center">
-          {tags.map(tag => (
-            <button
-              key={tag.id}
-              onClick={() => setSelectedTag(tag.id)}
-              className={`px-4 py-2 rounded-lg text-[12px] font-semibold tracking-wide transition-all whitespace-nowrap ${
-                selectedTag === tag.id 
-                  ? 'bg-kev-primary text-white shadow-lg shadow-kev-primary-glow/30' 
-                  : 'bg-white/[0.03] border border-kev-border text-kev-muted hover:text-kev-text-secondary hover:border-kev-border-hover'
-              }`}
-              id={`tag-filter-${tag.id}`}
+
+        {/* Middle Row: Toggle & Count */}
+        <div className="flex justify-between items-center bg-[#F9F7F5] rounded-xl p-2 border border-[#E8E4DF]">
+          <button 
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-2 px-3 py-1.5 text-[13px] font-bold text-kev-text hover:bg-white rounded-lg transition-colors border border-transparent hover:border-[#E8E4DF]"
+          >
+            <Filter size={14} className="text-kev-muted" /> 
+            {showFilters ? 'Hide Filters' : 'More Filters'}
+          </button>
+          <span className="text-[13px] font-bold text-kev-text-secondary px-3">
+            Showing 0-{customers.length} Customers
+          </span>
+        </div>
+
+        {/* Bottom Row: Additional Filters */}
+        <div className={`transition-all duration-300 overflow-hidden flex flex-wrap gap-4 items-center bg-[#F9F7F5] rounded-xl border border-[#E8E4DF] ${showFilters ? 'p-3 max-h-[500px] opacity-100' : 'p-0 max-h-0 opacity-0 border-transparent'}`}>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-kev-muted">CITY</span>
+            <select 
+              value={city} 
+              onChange={e => setCity(e.target.value)}
+              className="input py-2 pl-3 pr-8 text-[13px] font-medium appearance-none cursor-pointer bg-white border-[#E8E4DF] min-w-[130px] rounded-lg bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM2QjY4NzIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4=')] bg-no-repeat bg-[position:right_10px_center]"
             >
-              {tag.label}
-            </button>
-          ))}
+              <option value="all">Any city</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Bangalore">Bangalore</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-kev-muted">CHANNEL</span>
+            <select 
+              value={channel} 
+              onChange={e => setChannel(e.target.value)}
+              className="input py-2 pl-3 pr-8 text-[13px] font-medium appearance-none cursor-pointer bg-white border-[#E8E4DF] min-w-[130px] rounded-lg bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM2QjY4NzIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4=')] bg-no-repeat bg-[position:right_10px_center]"
+            >
+              <option value="all">Any channel</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="email">Email</option>
+              <option value="sms">SMS</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-kev-muted">GENDER</span>
+            <select 
+              value={gender} 
+              onChange={e => setGender(e.target.value)}
+              className="input py-2 pl-3 pr-8 text-[13px] font-medium appearance-none cursor-pointer bg-white border-[#E8E4DF] min-w-[130px] rounded-lg bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM2QjY4NzIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4=')] bg-no-repeat bg-[position:right_10px_center]"
+            >
+              <option value="all">Any gender</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2 ml-auto">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-kev-muted">SORT</span>
+            <select 
+              value={sort} 
+              onChange={e => setSort(e.target.value)}
+              className="input py-2 pl-3 pr-8 text-[13px] font-medium appearance-none cursor-pointer bg-white border-[#E8E4DF] min-w-[130px] rounded-lg bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM2QjY4NzIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4=')] bg-no-repeat bg-[position:right_10px_center]"
+            >
+              <option value="recent">Most Recent</option>
+              <option value="spend_desc">Top spend</option>
+              <option value="engagement_desc">Top engagement</option>
+            </select>
+          </div>
         </div>
       </div>
 
       {/* ── Grid of Cards ── */}
       <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 transition-all duration-500 ${selectedCustomer ? 'pr-[420px]' : ''}`}>
         {loading ? (
-          Array(6).fill(0).map((_, i) => <div key={i} className="glass-card h-48 animate-shimmer" />)
+          Array(6).fill(0).map((_, i) => <div key={i} className="card h-48 animate-shimmer" />)
         ) : customers.length > 0 ? (
           customers.map(cust => (
             <div 
               key={cust._id} 
               onClick={() => setSelectedCustomer(cust)}
-              className="glass-card p-5 cursor-pointer hover:-translate-y-0.5 group flex flex-col"
+              className="card p-5 cursor-pointer hover:-translate-y-0.5 group flex flex-col"
             >
               <div className="flex items-start gap-3.5 mb-5">
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-kev-primary/20 to-purple-500/10 border border-kev-border flex items-center justify-center text-kev-primary font-heading font-bold text-[13px]">
+                <div className="w-11 h-11 rounded-xl bg-kev-primary-soft border border-kev-primary-soft flex items-center justify-center text-kev-primary font-heading font-bold text-[13px]">
                   {getInitials(cust.name)}
                 </div>
                 <div className="flex-1 min-w-0 pt-0.5">
@@ -152,13 +247,13 @@ export default function CustomersPage() {
 
       {/* ── Slide-out Drawer ── */}
       <div 
-        className={`fixed top-3 right-3 h-[calc(100vh-1.5rem)] w-[400px] glass-card flex flex-col z-30 transition-all duration-400 ${selectedCustomer ? 'translate-x-0 opacity-100' : 'translate-x-[120%] opacity-0 pointer-events-none'}`}
+        className={`fixed top-3 right-3 h-[calc(100vh-1.5rem)] w-[400px] bg-white border-l border-kev-border shadow-xl rounded-l-xl flex flex-col z-30 transition-all duration-400 ${selectedCustomer ? 'translate-x-0 opacity-100' : 'translate-x-[120%] opacity-0 pointer-events-none'}`}
       >
         {selectedCustomer && (
           <>
             <div className="p-6 border-b border-kev-border flex justify-between items-start">
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-kev-primary/25 to-purple-500/15 border border-kev-border flex items-center justify-center text-kev-primary font-heading font-bold text-base">
+                <div className="w-12 h-12 rounded-xl bg-kev-primary-soft border border-kev-primary-soft flex items-center justify-center text-kev-primary font-heading font-bold text-base">
                   {getInitials(selectedCustomer.name)}
                 </div>
                 <div>
@@ -184,7 +279,7 @@ export default function CustomersPage() {
                   { label: 'Orders', value: selectedCustomer.orderCount.toString() },
                   { label: 'Engagement', value: selectedCustomer.engagementScore.toString(), suffix: '/100' },
                 ].map((metric, i) => (
-                  <div key={i} className="p-4 rounded-xl bg-kev-bg-alt/60 border border-kev-border/50">
+                  <div key={i} className="p-4 rounded-xl bg-kev-surface-solid border border-kev-border/50">
                     <p className="text-[10px] text-kev-muted uppercase tracking-wider font-bold mb-1.5">{metric.label}</p>
                     <p className="font-heading font-bold text-xl text-kev-text">
                       {metric.value}
@@ -204,12 +299,12 @@ export default function CustomersPage() {
                     {selectedCustomer.engagementScore}%
                   </span>
                 </div>
-                <div className="w-full bg-kev-bg-alt rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-kev-surface-solid rounded-full h-2 overflow-hidden">
                   <div 
                     className={`h-full rounded-full animate-bar-fill ${
-                      selectedCustomer.engagementScore >= 70 ? 'bg-gradient-to-r from-emerald-500 to-teal-400' :
-                      selectedCustomer.engagementScore >= 40 ? 'bg-gradient-to-r from-amber-500 to-yellow-400' :
-                      'bg-gradient-to-r from-red-500 to-orange-400'
+                      selectedCustomer.engagementScore >= 70 ? 'bg-emerald-500' :
+                      selectedCustomer.engagementScore >= 40 ? 'bg-amber-500' :
+                      'bg-red-500'
                     }`}
                     style={{ width: `${selectedCustomer.engagementScore}%` }}
                   />
@@ -250,13 +345,13 @@ export default function CustomersPage() {
                 <h3 className="text-[11px] font-bold uppercase tracking-wider text-kev-muted mb-3">Contact</h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-[13px]">
-                    <div className="w-8 h-8 rounded-lg bg-white/[0.03] border border-kev-border flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-kev-surface-solid border border-kev-border flex items-center justify-center">
                       <Mail size={13} className="text-kev-muted" />
                     </div>
                     <span className="text-kev-text-secondary">{selectedCustomer.email}</span>
                   </div>
                   <div className="flex items-center gap-3 text-[13px]">
-                    <div className="w-8 h-8 rounded-lg bg-white/[0.03] border border-kev-border flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-kev-surface-solid border border-kev-border flex items-center justify-center">
                       <Phone size={13} className="text-kev-muted" />
                     </div>
                     <span className="text-kev-text-secondary">{selectedCustomer.phone}</span>

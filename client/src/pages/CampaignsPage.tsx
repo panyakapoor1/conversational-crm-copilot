@@ -68,7 +68,7 @@ export default function CampaignsPage() {
           <p className="text-kev-muted mt-1.5 text-sm font-medium">Manage and launch personalised messaging.</p>
         </div>
         {!showCreate && (
-          <button onClick={() => setShowCreate(true)} className="glow-button px-5 py-2.5 flex items-center gap-2 text-sm">
+          <button onClick={() => setShowCreate(true)} className="btn-primary px-5 py-2.5 flex items-center gap-2 text-sm shadow-md shadow-kev-primary/20">
             <Plus size={16} strokeWidth={2.5} /> New Campaign
           </button>
         )}
@@ -76,7 +76,7 @@ export default function CampaignsPage() {
 
       {/* ── Create Campaign Form (Slide Down) ── */}
       {showCreate && (
-        <div className="glass-card p-8 animate-fade-in-up relative gradient-border">
+        <div className="card p-8 animate-fade-in-up relative">
           <button onClick={() => setShowCreate(false)} className="absolute top-6 right-6 text-kev-muted hover:text-kev-text p-2 rounded-lg hover:bg-white/[0.03] transition-colors">
             ✕
           </button>
@@ -94,7 +94,7 @@ export default function CampaignsPage() {
                 <label className="block text-[11px] font-bold text-kev-muted mb-2 uppercase tracking-wider">Campaign Name</label>
                 <input 
                   type="text" value={name} onChange={e => setName(e.target.value)}
-                  className="glass-input w-full py-3.5 px-4 text-[14px]" required
+                  className="input w-full py-3.5 px-4 text-[14px]" required
                   placeholder="e.g. Summer Mango Reactivation"
                 />
               </div>
@@ -102,7 +102,7 @@ export default function CampaignsPage() {
                 <label className="block text-[11px] font-bold text-kev-muted mb-2 uppercase tracking-wider">Target Segment</label>
                 <select 
                   value={segmentId} onChange={e => setSegmentId(e.target.value)}
-                  className="glass-input w-full py-3.5 px-4 text-[14px] appearance-none" required
+                  className="input w-full py-3.5 px-4 text-[14px] appearance-none" required
                 >
                   <option value="" disabled>Select Segment...</option>
                   {segments.map(s => <option key={s._id} value={s._id}>{s.name} ({s.customerCount.toLocaleString()} users)</option>)}
@@ -115,7 +115,7 @@ export default function CampaignsPage() {
                 <label className="block text-[11px] font-bold text-kev-muted mb-2 uppercase tracking-wider">Channel</label>
                 <select 
                   value={channel} onChange={e => setChannel(e.target.value as any)}
-                  className="glass-input w-full py-3.5 px-4 text-[14px] appearance-none"
+                  className="input w-full py-3.5 px-4 text-[14px] appearance-none"
                 >
                   <option value="mixed">AI Recommended (Mixed)</option>
                   <option value="whatsapp">WhatsApp</option>
@@ -131,13 +131,13 @@ export default function CampaignsPage() {
               </label>
               <textarea 
                 value={messageTemplate} onChange={e => setMessageTemplate(e.target.value)}
-                className="glass-input w-full py-4 px-5 h-28 resize-none text-[14px] leading-relaxed" required
+                className="input w-full py-4 px-5 h-28 resize-none text-[14px] leading-relaxed" required
                 placeholder="Describe what you want to say. The AI will personalize this for each user based on their engagement score and preferences..."
               />
             </div>
 
             <div className="pt-2 flex justify-end">
-              <button type="submit" disabled={isCreating} className="glow-button px-7 py-3 flex items-center gap-2 text-sm">
+              <button type="submit" disabled={isCreating} className="btn-primary px-7 py-3 flex items-center gap-2 text-sm shadow-md shadow-kev-primary/20">
                 {isCreating ? <Loader2 className="animate-spin" size={18} /> : <Sparkles size={18} />} Create Draft
               </button>
             </div>
@@ -148,9 +148,9 @@ export default function CampaignsPage() {
       {/* ── Campaigns Grid ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 stagger-children">
         {loading ? (
-          Array(3).fill(0).map((_, i) => <div key={i} className="glass-card h-48 animate-shimmer opacity-0 animate-fade-in-up" />)
+          Array(3).fill(0).map((_, i) => <div key={i} className="card h-48 animate-shimmer opacity-0 animate-fade-in-up" />)
         ) : campaigns.map(camp => (
-          <div key={camp._id} onClick={() => navigate(`/campaigns/${camp._id}`)} className="glass-card p-6 cursor-pointer group flex flex-col justify-between h-[200px] hover:-translate-y-0.5 opacity-0 animate-fade-in-up">
+          <div key={camp._id} onClick={() => navigate(`/campaigns/${camp._id}`)} className="card p-6 cursor-pointer group flex flex-col justify-between h-[200px] hover:-translate-y-0.5 opacity-0 animate-fade-in-up">
             <div>
               <div className="flex justify-between items-start mb-1.5">
                 <span className={`status-badge ${getStatusClass(camp.status)}`}>

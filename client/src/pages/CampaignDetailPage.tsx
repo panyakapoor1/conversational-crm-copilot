@@ -92,7 +92,7 @@ export default function CampaignDetailPage() {
       </button>
 
       {/* ── Hero Header ── */}
-      <header className="glass-card p-8 lg:p-10 flex flex-col md:flex-row justify-between md:items-center gap-6 relative overflow-hidden">
+      <header className="card p-8 lg:p-10 flex flex-col md:flex-row justify-between md:items-center gap-6 relative overflow-hidden">
         {/* Ambient glow */}
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-kev-primary/10 blur-[80px] pointer-events-none" />
         
@@ -109,7 +109,7 @@ export default function CampaignDetailPage() {
         </div>
         
         {campaign.status === 'draft' && (
-          <button onClick={handleSend} disabled={sending} className="glow-button px-8 py-3.5 flex items-center gap-3 relative z-10 self-start md:self-auto">
+          <button onClick={handleSend} disabled={sending} className="btn-primary px-8 py-3.5 flex items-center gap-3 relative z-10 self-start md:self-auto shadow-md shadow-kev-primary/20">
             {sending ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Dispatching...</> : <>Launch Campaign <Rocket size={18} /></>}
           </button>
         )}
@@ -117,7 +117,7 @@ export default function CampaignDetailPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* ── Delivery Metrics ── */}
-        <div className="glass-card p-8 lg:p-10 lg:col-span-1 h-[600px] flex flex-col relative overflow-hidden">
+        <div className="card p-8 lg:p-10 lg:col-span-1 h-[600px] flex flex-col relative overflow-hidden">
           <h2 className="text-xl font-heading font-bold mb-8 text-kev-text">Delivery Metrics</h2>
           <div className="mb-10 relative z-10">
             <p className="text-[11px] text-kev-muted uppercase tracking-wider font-bold mb-1">Total Audience</p>
@@ -133,7 +133,7 @@ export default function CampaignDetailPage() {
                     <span className="flex items-center gap-2 text-kev-text-secondary"><bar.icon size={14} strokeWidth={2} /> {bar.label}</span>
                     <span className="text-kev-text">{bar.val.toLocaleString()}</span>
                   </div>
-                  <div className="w-full bg-kev-bg-alt rounded-full h-2 overflow-hidden shadow-inner">
+                  <div className="w-full bg-kev-surface-solid rounded-full h-2 overflow-hidden shadow-sm">
                     <div className={`h-full rounded-full bg-gradient-to-r ${bar.color} transition-all duration-700 ease-out shadow-lg`} style={{ width }}></div>
                   </div>
                 </div>
@@ -145,7 +145,7 @@ export default function CampaignDetailPage() {
         <div className="lg:col-span-2 space-y-8">
           {/* ── AI Debrief ── */}
           {campaign.status !== 'draft' && campaign.status !== 'sending' && (
-            <div className="glass-card p-8 lg:p-10 relative overflow-hidden gradient-border">
+            <div className="card p-8 lg:p-10 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-b from-kev-primary/5 to-transparent pointer-events-none" />
               
               <div className="flex justify-between items-center mb-6 pb-5 border-b border-kev-border relative z-10">
@@ -170,7 +170,7 @@ export default function CampaignDetailPage() {
           )}
 
           {/* ── Message Log ── */}
-          <div className="glass-card p-8 lg:p-10">
+          <div className="card p-8 lg:p-10">
             <h2 className="text-xl font-heading font-bold mb-6 pb-5 border-b border-kev-border text-kev-text">Message Log</h2>
             {communications.length > 0 ? (
               <div className="space-y-5 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
@@ -194,7 +194,7 @@ export default function CampaignDetailPage() {
                         </span>
                       </div>
                     </div>
-                    <div className="text-[14px] leading-relaxed text-kev-text-secondary bg-kev-bg-alt/80 p-4 rounded-xl border border-kev-border whitespace-pre-wrap">
+                    <div className="text-[14px] leading-relaxed text-kev-text-secondary bg-kev-surface-solid p-4 rounded-xl border border-kev-border whitespace-pre-wrap">
                       {comm.personalizedMessage}
                     </div>
                   </div>
