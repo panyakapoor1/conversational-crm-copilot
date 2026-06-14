@@ -173,7 +173,7 @@ export default function CampaignDetailPage() {
           <div className="card p-8 lg:p-10">
             <h2 className="text-xl font-heading font-bold mb-6 pb-5 border-b border-kev-border text-kev-text">Message Log</h2>
             {communications.length > 0 ? (
-              <div className="space-y-5 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="space-y-5 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar" data-lenis-prevent>
                 {communications.map(comm => (
                   <div key={comm._id} className="pb-5 border-b border-kev-border/50 last:border-0 last:pb-0">
                     <div className="flex justify-between items-start mb-3">

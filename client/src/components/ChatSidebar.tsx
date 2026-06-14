@@ -96,7 +96,7 @@ export default function ChatSidebar() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        <div className="flex-1 overflow-y-auto p-5 space-y-4" data-lenis-prevent>
           {messages.length === 0 && (
             <div className="text-center mt-16 px-6">
               <div className="w-14 h-14 rounded-2xl bg-kev-accent-soft border border-kev-accent/20 flex items-center justify-center mx-auto mb-5">

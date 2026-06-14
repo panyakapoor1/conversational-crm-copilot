@@ -270,7 +270,7 @@ export default function CustomersPage() {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-8">
+            <div className="flex-1 overflow-y-auto p-6 space-y-8" data-lenis-prevent>
               {/* Key Metrics */}
               <div className="grid grid-cols-2 gap-3">
                 {[
