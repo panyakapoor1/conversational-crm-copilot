@@ -48,7 +48,7 @@ function extractJSON(text: string): any {
 /**
  * Sends a message to Gemini and returns the text content.
  */
-async function askGemini(
+async function askAI(
   systemInstruction: string,
   userMessage: string
 ): Promise<string> {
@@ -67,11 +67,47 @@ async function askGemini(
     throw new Error('Unexpected response type from Gemini');
   } catch (error: any) {
     const msg = error?.message || '';
-    if (msg.includes('429') || msg.includes('Quota') || error?.status === 429) {
-      throw new Error('API_LIMIT_REACHED: Gemini free-tier quota exhausted. Please use a new API key or wait for quota reset.');
+    if (msg.includes('429') || msg.includes('Quota') || error?.status === 429 || error?.status === 503) {
+      console.warn('⚠️ Gemini quota exhausted. Falling back to Groq API...');
+      return await askGroqFallback(systemInstruction, userMessage);
     }
     throw error;
   }
+}
+
+async function askGroqFallback(systemInstruction: string, userMessage: string): Promise<string> {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    throw new Error('API_LIMIT_REACHED: Gemini quota exhausted and GROQ_API_KEY is not configured.');
+  }
+
+  // We can use the global fetch since Node 18+ has it built-in
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        { role: 'system', content: systemInstruction },
+        { role: 'user', content: userMessage }
+      ],
+      temperature: 0.7,
+    })
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Groq API Error: ${response.status} - ${errText}`);
+  }
+
+  const data = await response.json() as any;
+  if (data.choices && data.choices[0] && data.choices[0].message) {
+    return data.choices[0].message.content;
+  }
+  throw new Error('Unexpected response format from Groq API');
 }
 
 // ---------------------------------------------------------------------------
@@ -121,7 +157,7 @@ RULES:
   "estimatedCount": <estimated number of matching customers based on the stats>
 }`;
 
-  const raw = await askGemini(systemPrompt, naturalLanguageQuery);
+  const raw = await askAI(systemPrompt, naturalLanguageQuery);
   const parsed = extractJSON(raw);
 
   return {
@@ -182,7 +218,7 @@ Return ONLY valid JSON as an array of exactly 6 objects:
   }
 ]`;
 
-  const raw = await askGemini(
+  const raw = await askAI(
     systemPrompt,
     `Here are the current customer statistics:\n${JSON.stringify(customerStats, null, 2)}`
   );
@@ -275,7 +311,7 @@ Return ONLY valid JSON as an array:
 ]`;
 
     try {
-      const raw = await askGemini(
+      const raw = await askAI(
         systemPrompt,
         `Personalise messages for these customers:\n${JSON.stringify(customerSummaries, null, 2)}`
       );
@@ -378,7 +414,7 @@ ${JSON.stringify({
     sentAt: campaign.sentAt,
   }, null, 2)}`;
 
-  return await askGemini(systemPrompt, userMessage);
+  return await askAI(systemPrompt, userMessage);
 }
 
 // ---------------------------------------------------------------------------
@@ -441,7 +477,7 @@ Return ONLY valid JSON:
   "confidence": <0.0 to 1.0>
 }`;
 
-  const raw = await askGemini(
+  const raw = await askAI(
     systemPrompt,
     `Segment engagement profile:\n${JSON.stringify(engagementProfile, null, 2)}`
   );
@@ -499,5 +535,5 @@ RULES:
 - Format responses in markdown when appropriate
 - If you don't have enough data to answer, say so honestly`;
 
-  return await askGemini(systemPrompt, message);
+  return await askAI(systemPrompt, message);
 }
